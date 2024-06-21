@@ -30,12 +30,11 @@ std::shared_ptr<daedalus::values::RuntimeValue> daedalus::env::Environment::set_
 
 	for(const daedalus::env::EnvValidationRule& rule : this->validationRules) {
 		if(std::find(rule.sensitivity.begin(), rule.sensitivity.end(), daedalus::env::ValidationRuleSensitivity::SET) != rule.sensitivity.end()) {
-			if(!rule.validationFunction(
+			this->values.at(key) = rule.validationFunction(
 				this->values.at(key),
 				old_val
-			)) {
-				throw std::runtime_error(rule.get_message(key, "SET"));
-			}
+			);
+			return old_val;
 		}
 	}
 
@@ -62,16 +61,13 @@ std::shared_ptr<daedalus::values::RuntimeValue> daedalus::env::Environment::init
 
 	for(const daedalus::env::EnvValidationRule& rule : this->validationRules) {
 		if(std::find(rule.sensitivity.begin(), rule.sensitivity.end(), daedalus::env::ValidationRuleSensitivity::INIT) != rule.sensitivity.end()) {
-			if(rule.validationFunction(
-				this->values.at(key),
+			this->values[key] = rule.validationFunction(
+				daedalus::env::EnvValue(daedalus::env::EnvValue{value, properties}),
 				nullptr
-			)) {
-				throw std::runtime_error(rule.get_message(key, "INIT"));
-			}
+			);
+			return value;
 		}
 	}
-
-	this->values[key] = daedalus::env::EnvValue(daedalus::env::EnvValue{value, properties});
 
 	return value;
 }
@@ -85,12 +81,10 @@ std::shared_ptr<daedalus::values::RuntimeValue> daedalus::env::Environment::get_
 	}
 	for(const daedalus::env::EnvValidationRule& rule : this->validationRules) {
 		if(std::find(rule.sensitivity.begin(), rule.sensitivity.end(), daedalus::env::ValidationRuleSensitivity::GET) != rule.sensitivity.end()) {
-			if(rule.validationFunction(
+			return rule.validationFunction(
 				this->values.at(key),
 				nullptr
-			)) {
-				throw std::runtime_error(rule.get_message(key, "GET"));
-			}
+			).value;
 		}
 	}
 	return this->values.at(key).value;
