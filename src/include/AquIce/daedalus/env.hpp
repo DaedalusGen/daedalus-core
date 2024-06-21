@@ -34,6 +34,7 @@ namespace daedalus {
 		} EnvValue;
 
 		typedef struct EnvValidationRule {
+			std::function<std::string (std::string key, std::string on)> get_message;
 			std::function<bool (EnvValue)> validationFunction;
 			std::vector<ValidationRuleSensitivity> sensitivity;
 		} EnvValidationRule;

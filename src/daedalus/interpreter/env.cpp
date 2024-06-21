@@ -31,7 +31,7 @@ std::shared_ptr<daedalus::values::RuntimeValue> daedalus::env::Environment::set_
 	for(const daedalus::env::EnvValidationRule& rule : this->validationRules) {
 		if(std::find(rule.sensitivity.begin(), rule.sensitivity.end(), daedalus::env::ValidationRuleSensitivity::SET) != rule.sensitivity.end()) {
 			if(!rule.validationFunction(this->values.at(key))) {
-				throw std::runtime_error("Validation rule triggered on " + key);
+				throw std::runtime_error(rule.get_message(key, "SET"));
 			}
 		}
 	}
@@ -60,7 +60,7 @@ std::shared_ptr<daedalus::values::RuntimeValue> daedalus::env::Environment::init
 	for(const daedalus::env::EnvValidationRule& rule : this->validationRules) {
 		if(std::find(rule.sensitivity.begin(), rule.sensitivity.end(), daedalus::env::ValidationRuleSensitivity::INIT) != rule.sensitivity.end()) {
 			if(rule.validationFunction(this->values.at(key))) {
-				throw std::runtime_error("Validation rule triggered on " + key);
+				throw std::runtime_error(rule.get_message(key, "INIT"));
 			}
 		}
 	}
@@ -80,7 +80,7 @@ std::shared_ptr<daedalus::values::RuntimeValue> daedalus::env::Environment::get_
 	for(const daedalus::env::EnvValidationRule& rule : this->validationRules) {
 		if(std::find(rule.sensitivity.begin(), rule.sensitivity.end(), daedalus::env::ValidationRuleSensitivity::GET) != rule.sensitivity.end()) {
 			if(rule.validationFunction(this->values.at(key))) {
-				throw std::runtime_error("Validation rule triggered on " + key);
+				throw std::runtime_error(rule.get_message(key, "GET"));
 			}
 		}
 	}
