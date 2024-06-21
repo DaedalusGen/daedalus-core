@@ -387,9 +387,9 @@ void setup_parser(daedalus::parser::Parser& parser) {
 
 #pragma region Interpreter Implementation
 
-bool validate_mutability(daedalus::env::EnvValue value) {
+bool validate_mutability(daedalus::env::EnvValue env_value, std::shared_ptr<daedalus::values::RuntimeValue> new_value) {
 	try {
-		return value.properties.at("isMutable") == "true";
+		return env_value.properties.at("isMutable") == "true";
 	} catch(const std::exception& e) {
 		throw std::runtime_error("Trying to access undeclared property \"isMutable\"");
 	}
