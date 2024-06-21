@@ -26,22 +26,26 @@ std::shared_ptr<daedalus::values::RuntimeValue> daedalus::env::Environment::set_
 		throw std::runtime_error("Trying to set non-declared variable " + key);
 	}
 	
-	std::shared_ptr<daedalus::values::RuntimeValue> old_val = this->get_value(key);
+	std::shared_ptr<daedalus::values::RuntimeValue> oldVal = this->get_value(key);
+
+	daedalus::env::EnvValue envValue = daedalus::env::EnvValue{
+		value,
+		this->values.at(key).properties
+	};
 
 	for(const daedalus::env::EnvValidationRule& rule : this->validationRules) {
 		if(std::find(rule.sensitivity.begin(), rule.sensitivity.end(), daedalus::env::ValidationRuleSensitivity::SET) != rule.sensitivity.end()) {
-			this->values.at(key) = rule.validationFunction(
+			envValue = rule.validationFunction(
 				this->values.at(key),
-				old_val,
+				envValue.value,
 				key
 			);
-			return old_val;
 		}
 	}
 
-	this->values.at(key).value = value;
+	this->values.at(key) = envValue;
 
-	return old_val;
+	return oldVal;
 }
 
 std::shared_ptr<daedalus::values::RuntimeValue> daedalus::env::Environment::init_value(
@@ -60,18 +64,22 @@ std::shared_ptr<daedalus::values::RuntimeValue> daedalus::env::Environment::init
 		throw std::runtime_error("Trying to redeclare an existing variable " + key);
 	}
 
+	daedalus::env::EnvValue envValue = daedalus::env::EnvValue{
+		value,
+		properties
+	};
+
 	for(const daedalus::env::EnvValidationRule& rule : this->validationRules) {
 		if(std::find(rule.sensitivity.begin(), rule.sensitivity.end(), daedalus::env::ValidationRuleSensitivity::INIT) != rule.sensitivity.end()) {
-			this->values[key] = rule.validationFunction(
-				daedalus::env::EnvValue{value, properties},
+			envValue = rule.validationFunction(
+				envValue,
 				nullptr,
 				key
 			);
-			return value;
 		}
 	}
 
-	this->values[key] = daedalus::env::EnvValue{value, properties};
+	this->values[key] = envValue;
 
 	return value;
 }
@@ -83,13 +91,16 @@ std::shared_ptr<daedalus::values::RuntimeValue> daedalus::env::Environment::get_
 		}
 		throw std::runtime_error("Trying to get non-declared variable " + key);
 	}
+
+	daedalus::env::EnvValue envValue = this->values.at(key);
+
 	for(const daedalus::env::EnvValidationRule& rule : this->validationRules) {
 		if(std::find(rule.sensitivity.begin(), rule.sensitivity.end(), daedalus::env::ValidationRuleSensitivity::GET) != rule.sensitivity.end()) {
-			return rule.validationFunction(
-				this->values.at(key),
+			envValue = rule.validationFunction(
+				envValue,
 				nullptr,
 				key
-			).value;
+			);
 		}
 	}
 	return this->values.at(key).value;
