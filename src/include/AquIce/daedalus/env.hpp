@@ -34,7 +34,7 @@ namespace daedalus {
 		} EnvValue;
 
 		typedef struct EnvValidationRule {
-			std::function<daedalus::env::EnvValue (EnvValue env_value, std::shared_ptr<daedalus::values::RuntimeValue> new_value)> validationFunction;
+			std::function<daedalus::env::EnvValue (EnvValue env_value, std::shared_ptr<daedalus::values::RuntimeValue> new_value, std::string key)> validationFunction;
 			std::vector<ValidationRuleSensitivity> sensitivity;
 		} EnvValidationRule;
 

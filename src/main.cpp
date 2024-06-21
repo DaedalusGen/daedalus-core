@@ -14,7 +14,7 @@ std::shared_ptr<daedalus::ast::Expression> parse_binary_expression(std::vector<d
 
 void setup_parser(daedalus::parser::Parser& parser);
 
-daedalus::env::EnvValue validate_mutability(daedalus::env::EnvValue env_value, std::shared_ptr<daedalus::values::RuntimeValue> new_value);
+daedalus::env::EnvValue validate_mutability(daedalus::env::EnvValue env_value, std::shared_ptr<daedalus::values::RuntimeValue> new_value, std::string key);
 
 std::shared_ptr<daedalus::values::RuntimeValue> evaluate_boolean_expression (
 	daedalus::interpreter::Interpreter& interpreter,
@@ -385,12 +385,12 @@ void setup_parser(daedalus::parser::Parser& parser) {
 
 #pragma region Interpreter Implementation
 
-daedalus::env::EnvValue validate_mutability(daedalus::env::EnvValue env_value, std::shared_ptr<daedalus::values::RuntimeValue> new_value) {
+daedalus::env::EnvValue validate_mutability(daedalus::env::EnvValue env_value, std::shared_ptr<daedalus::values::RuntimeValue> new_value, std::string key) {
 	try {
 		if(env_value.properties.at("isMutable") == "true") {
 			return daedalus::env::EnvValue{ new_value, env_value.properties };
 		}
-		throw std::runtime_error("Trying to assign to immutable value \"\n" + env_value.value->repr() + "\n\"");
+		throw std::runtime_error("Trying to assign to immutable value \"" + key + "\"");
 	} catch(const std::exception& e) {
 		throw std::runtime_error("Trying to access undeclared property \"isMutable\"");
 	}

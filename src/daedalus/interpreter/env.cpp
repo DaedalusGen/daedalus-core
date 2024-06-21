@@ -32,7 +32,8 @@ std::shared_ptr<daedalus::values::RuntimeValue> daedalus::env::Environment::set_
 		if(std::find(rule.sensitivity.begin(), rule.sensitivity.end(), daedalus::env::ValidationRuleSensitivity::SET) != rule.sensitivity.end()) {
 			this->values.at(key) = rule.validationFunction(
 				this->values.at(key),
-				old_val
+				old_val,
+				key
 			);
 			return old_val;
 		}
@@ -63,7 +64,8 @@ std::shared_ptr<daedalus::values::RuntimeValue> daedalus::env::Environment::init
 		if(std::find(rule.sensitivity.begin(), rule.sensitivity.end(), daedalus::env::ValidationRuleSensitivity::INIT) != rule.sensitivity.end()) {
 			this->values[key] = rule.validationFunction(
 				daedalus::env::EnvValue(daedalus::env::EnvValue{value, properties}),
-				nullptr
+				nullptr,
+				key
 			);
 			return value;
 		}
@@ -83,7 +85,8 @@ std::shared_ptr<daedalus::values::RuntimeValue> daedalus::env::Environment::get_
 		if(std::find(rule.sensitivity.begin(), rule.sensitivity.end(), daedalus::env::ValidationRuleSensitivity::GET) != rule.sensitivity.end()) {
 			return rule.validationFunction(
 				this->values.at(key),
-				nullptr
+				nullptr,
+				key
 			).value;
 		}
 	}
