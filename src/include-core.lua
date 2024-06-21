@@ -12,7 +12,7 @@ project "Daedalus-Core"
 	includedirs { "include/" }
 
 	filter { "configurations:run" }
-		kind "ConsoleApp"
+		kind "SharedLib"
 
 	filter { "configurations:static-build" }
 		kind "StaticLib"
