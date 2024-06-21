@@ -63,13 +63,15 @@ std::shared_ptr<daedalus::values::RuntimeValue> daedalus::env::Environment::init
 	for(const daedalus::env::EnvValidationRule& rule : this->validationRules) {
 		if(std::find(rule.sensitivity.begin(), rule.sensitivity.end(), daedalus::env::ValidationRuleSensitivity::INIT) != rule.sensitivity.end()) {
 			this->values[key] = rule.validationFunction(
-				daedalus::env::EnvValue(daedalus::env::EnvValue{value, properties}),
+				daedalus::env::EnvValue{value, properties},
 				nullptr,
 				key
 			);
 			return value;
 		}
 	}
+
+	this->values[key] = daedalus::env::EnvValue{value, properties};
 
 	return value;
 }
