@@ -1606,9 +1606,9 @@ To do that, you need to pass three arguments :
 // main.cpp > main
 
 daedalus::Daedalus daedalusConfig = daedalus::setup_daedalus(
-	setup_lexer,
-	setup_parser,
-	setup_interpreter
+	&setup_lexer,
+	&setup_parser,
+	&setup_interpreter
 );
 ```
 

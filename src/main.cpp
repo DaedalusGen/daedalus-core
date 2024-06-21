@@ -160,9 +160,9 @@ private:
 int main(int argc, char** argv) {
 
 	daedalus::Daedalus daedalusConfig = daedalus::setup_daedalus(
-		setup_lexer,
-		setup_parser,
-		setup_interpreter
+		&setup_lexer,
+		&setup_parser,
+		&setup_interpreter
 	);
 
 	std::string src = "true && false || !false";
