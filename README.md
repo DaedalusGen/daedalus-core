@@ -930,10 +930,16 @@ We can define the validation rule, and when it should be used (on variable `init
 
 A validation function is named following the pattern `validate_<thing_to_validate>`.
 
-It takes in an `EnvValue` and outputs a boolean to tell whether the operation is valid or should be cancelled.
+It takes in :
+
+- The destination value as an `EnvValue`
+- The new value as a shared pointer to a `RuntimeValue`
+- The key of the value to set
+
+and outputs the resulting EnvValue or throws if the rule is violated.
 
 ```cpp
-bool validate_any(daedalus::env::EnvValue value);
+daedalus::env::EnvValue validate_any(daedalus::env::EnvValue env_value, std::shared_ptr<daedalus::values::RuntimeValue> new_value, std::string key);
 ```
 
 The function to validate the mutability should look something like this :
@@ -941,12 +947,15 @@ The function to validate the mutability should look something like this :
 ```cpp
 // main.cpp
 
-bool validate_mutability(daedalus::env::EnvValue value) {
+daedalus::env::EnvValue validate_mutability(daedalus::env::EnvValue env_value, std::shared_ptr<daedalus::values::RuntimeValue> new_value, std::string key) {
 	try {
-		return value.properties.at("isMutable") == "true";
+		if(env_value.properties.at("isMutable") == "true") {
+			return daedalus::env::EnvValue{ new_value, env_value.properties };
+		}
 	} catch(const std::exception& e) {
 		throw std::runtime_error("Trying to access undeclared property \"isMutable\"");
 	}
+	throw std::runtime_error("Trying to assign to immutable value \"" + key + "\"");
 }
 ```
 

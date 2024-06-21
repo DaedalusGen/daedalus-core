@@ -390,10 +390,10 @@ daedalus::env::EnvValue validate_mutability(daedalus::env::EnvValue env_value, s
 		if(env_value.properties.at("isMutable") == "true") {
 			return daedalus::env::EnvValue{ new_value, env_value.properties };
 		}
-		throw std::runtime_error("Trying to assign to immutable value \"" + key + "\"");
 	} catch(const std::exception& e) {
 		throw std::runtime_error("Trying to access undeclared property \"isMutable\"");
 	}
+	throw std::runtime_error("Trying to assign to immutable value \"" + key + "\"");
 }
 
 std::shared_ptr<daedalus::values::RuntimeValue> evaluate_boolean_expression (
