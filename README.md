@@ -29,6 +29,7 @@
 		- [Execution](#execution-2)
 		- [Result](#result-2)
 		- [Code](#code-2)
+	- [Core Setup](#core-setup)
 
 # Setup
 
@@ -1576,3 +1577,39 @@ void setup_interpreter(daedalus::interpreter::Interpreter& interpreter) {
 
 #pragma endregion
 ```
+
+## Core Setup
+
+You can also setup all of that faster, by using the function `setup_daedalus` from `daedalus`.
+
+To do that, you need to pass three arguments :
+
+- The `setup_lexer` function
+
+	```cpp
+	void setup_lexer(daedalus::lexer::Lexer& lexer);
+	```
+
+- The `setup_parser` function
+
+	```cpp
+	void setup_parser(daedalus::parser::Parser& parser);
+	```
+
+- The `setup_interpreter` function
+
+	```cpp
+	void setup_interpreter(daedalus::interpreter::Interpreter& interpreter);
+	```
+
+```cpp
+// main.cpp > main
+
+daedalus::Daedalus daedalusConfig = daedalus::setup_daedalus(
+	setup_lexer,
+	setup_parser,
+	setup_interpreter
+);
+```
+
+Now, when you need to call `lex`, `parse` or `interpret`, you can pass `daedalusConfig.<lexer/parser/interpreter>` as the lexer / parser / interpreter.

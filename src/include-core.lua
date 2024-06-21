@@ -5,6 +5,7 @@ project "Daedalus-Core"
 	
 	files {
 		"main.cpp",
+		"daedalus/core.cpp",
 		"daedalus/**/*.cpp",
 		"include/AquIce/daedalus/*.hpp"
 	}
