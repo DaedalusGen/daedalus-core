@@ -26,8 +26,13 @@ namespace daedalus {
 			bool isTopNode;
 		} Node;
 
+		enum class ParserFlags {
+			OPTI_CONST_EXPR,
+		};
+
 		typedef struct Parser {
 			std::unordered_map<std::string, Node> nodesRegister;
+			std::vector<ParserFlags> flags;
 		} Parser;
 
 		Node make_node(
@@ -50,7 +55,13 @@ namespace daedalus {
 
 		void setup_parser(
 			Parser& parser,
-			std::unordered_map<std::string, Node> nodesRegister
+			std::unordered_map<std::string, Node> nodesRegister,
+			std::vector<ParserFlags> flags = std::vector<ParserFlags>({ ParserFlags::OPTI_CONST_EXPR })
+		);
+
+		bool has_flag(
+			Parser& parser,
+			ParserFlags flag
 		);
 
 		std::shared_ptr<daedalus::ast::Statement> parse_statement(

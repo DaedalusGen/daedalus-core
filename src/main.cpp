@@ -452,7 +452,8 @@ void setup_parser(daedalus::parser::Parser& parser) {
 				"BinaryExpression",
 				daedalus::parser::make_node(&parse_binary_expression)
 			},
-		}
+		},
+		std::vector<daedalus::parser::ParserFlags>()
 	);
 
 	daedalus::parser::demoteTopNode(parser, "NumberExpression");

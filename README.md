@@ -501,7 +501,10 @@ Now that we have everything, we just need to link it all together in our `setup_
 
 First, we call the `setup_parser` function found in `daedalus::parser`.
 
-We pass the Node Types we want to add as parameters (in our example only `BinaryExpression`).
+We pass the following as arguments :
+- The parser
+- The Node Types we want to add as parameters (in our example only `BinaryExpression`)
+- The list of the parser flags (defaults to `{ OPTI_CONST_EXPR }`)
 
 ```cpp
 daedalus::parser::setup_parser(
@@ -511,7 +514,8 @@ daedalus::parser::setup_parser(
 			"BinaryExpression",
 			daedalus::parser::make_node(&parse_binary_expression)
 		}
-	}
+	},,
+	std::vector<daedalus::parser::ParserFlags>()
 );
 ```
 

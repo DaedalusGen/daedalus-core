@@ -44,7 +44,8 @@ void daedalus::parser::register_node(
 
 void daedalus::parser::setup_parser(
 	Parser& parser,
-	std::unordered_map<std::string, Node> nodesRegister
+	std::unordered_map<std::string, Node> nodesRegister,
+	std::vector<daedalus::parser::ParserFlags> flags
 ) {
 	parser.nodesRegister = nodesRegister;
 	daedalus::parser::register_node(
@@ -52,6 +53,18 @@ void daedalus::parser::setup_parser(
 		"NumberExpression",
 		daedalus::parser::make_node(&parse_number_expression)
 	);
+	parser.flags = flags;
+}
+
+bool daedalus::parser::has_flag(
+	daedalus::parser::Parser& parser,
+	daedalus::parser::ParserFlags flag
+) {
+	return std::find(
+		parser.flags.begin(),
+		parser.flags.end(),
+		flag
+	) != parser.flags.end();
 }
 
 std::shared_ptr<daedalus::ast::Statement> daedalus::parser::parse_statement(
@@ -63,6 +76,9 @@ std::shared_ptr<daedalus::ast::Statement> daedalus::parser::parse_statement(
 	for(auto& [key, node] : parser.nodesRegister) {
 		if(node.isTopNode && statement == nullptr) {
 			statement = node.parse_node(tokens);
+			if(!has_flag(parser, daedalus::parser::ParserFlags::OPTI_CONST_EXPR)) {
+				continue;
+			}
 			if(std::shared_ptr<daedalus::ast::Expression> expression = std::dynamic_pointer_cast<daedalus::ast::Expression>(statement)) {
 				statement = expression->get_constexpr();
 			}
