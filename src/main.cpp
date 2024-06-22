@@ -50,7 +50,7 @@ public:
 		return "BooleanExpression";
 	}
 	virtual std::shared_ptr<daedalus::ast::Expression> get_constexpr() override {
-		return this->shared_from_this();
+		std::shared_ptr<BooleanExpression>(this);
 	}
 	virtual std::string repr(int indent = 0) {
 		return std::string(indent, '\t') + std::string(this->value ? "true" : "false");
@@ -82,7 +82,7 @@ public:
 				return booleanExpression;
 			}
 		}
-		return this->shared_from_this();
+		std::shared_ptr<UnaryExpression>(this);
 	}
 	virtual std::string repr(int indent = 0) {
 		return
