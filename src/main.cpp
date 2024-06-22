@@ -38,7 +38,7 @@ void setup_interpreter(daedalus::interpreter::Interpreter& interpreter);
 
 #pragma region Parser Classes
 
-class BooleanExpression : public daedalus::ast::Expression {
+class BooleanExpression : public daedalus::ast::Expression, public std::enable_shared_from_this<BooleanExpression> {
 public:
 	bool value;
 
@@ -49,12 +49,15 @@ public:
 	virtual std::string type() override {
 		return "BooleanExpression";
 	}
+	virtual std::shared_ptr<daedalus::ast::Expression> get_constexpr() override {
+		return this->shared_from_this();
+	}
 	virtual std::string repr(int indent = 0) {
 		return std::string(indent, '\t') + std::string(this->value ? "true" : "false");
 	}
 };
 
-class UnaryExpression : public daedalus::ast::Expression {
+class UnaryExpression : public daedalus::ast::Expression, public std::enable_shared_from_this<UnaryExpression> {
 public:
 	UnaryExpression(std::shared_ptr<daedalus::ast::Expression> term, std::string operator_symbol) {
 		this->term = term;
@@ -71,7 +74,16 @@ public:
 	virtual std::string type() override {
 		return "UnaryExpression";
 	}
-
+	virtual std::shared_ptr<daedalus::ast::Expression> get_constexpr() override {
+		this->term = this->term->get_constexpr();
+		if(std::shared_ptr<BooleanExpression> booleanExpression = std::dynamic_pointer_cast<BooleanExpression>(this->term)) {
+			if(this->operator_symbol == "!") {
+				booleanExpression->value = !booleanExpression->value;
+				return booleanExpression;
+			}
+		}
+		return this->shared_from_this();
+	}
 	virtual std::string repr(int indent = 0) {
 		return
 			std::string(indent, '\t') + "(\n" +
@@ -85,7 +97,7 @@ private:
 	std::string operator_symbol;
 };
 
-class BinaryExpression : public daedalus::ast::Expression {
+class BinaryExpression : public daedalus::ast::Expression, public std::enable_shared_from_this<BinaryExpression> {
 public:
 	BinaryExpression(std::shared_ptr<daedalus::ast::Expression> left, std::string operator_symbol, std::shared_ptr<daedalus::ast::Expression> right) {
 		this->left = left;
@@ -106,7 +118,72 @@ public:
 	virtual std::string type() override {
 		return "BinaryExpression";
 	}
+	virtual std::shared_ptr<daedalus::ast::Expression> get_constexpr() override {
+		this->left = this->left->get_constexpr();
+		this->right = this->right->get_constexpr();
 
+		if(left->type() == "NumberExpression" && right->type() == "NumberExpression") {
+			std::shared_ptr<daedalus::ast::NumberExpression> leftNb = std::dynamic_pointer_cast<daedalus::ast::NumberExpression>(left);
+			std::shared_ptr<daedalus::ast::NumberExpression> rightNb = std::dynamic_pointer_cast<daedalus::ast::NumberExpression>(right);
+			if(this->operator_symbol == "+") {
+				return std::make_shared<daedalus::ast::NumberExpression>(leftNb->value + rightNb->value);
+			}
+			if(this->operator_symbol == "-") {
+				return std::make_shared<daedalus::ast::NumberExpression>(leftNb->value - rightNb->value);
+			}
+			if(this->operator_symbol == "*") {
+				return std::make_shared<daedalus::ast::NumberExpression>(leftNb->value * rightNb->value);
+			}
+			if(this->operator_symbol == "/") {
+				if(rightNb->value == 0) {
+					throw std::runtime_error("Trying to divide by zero");
+				}
+				return std::make_shared<daedalus::ast::NumberExpression>(leftNb->value / rightNb->value);
+			}
+			if(this->operator_symbol == "&&") {
+				return std::make_shared<BooleanExpression>(leftNb->value && rightNb->value);
+			}
+			if(this->operator_symbol == "||") {
+				return std::make_shared<BooleanExpression>(leftNb->value || rightNb->value);
+			}
+			throw std::runtime_error("Invalid operator for NumberExpression and NumberExpression");
+		}
+		if(left->type() == "BooleanExpression" && right->type() == "BooleanExpression") {
+			std::shared_ptr<BooleanExpression> leftBool = std::dynamic_pointer_cast<BooleanExpression>(left);
+			std::shared_ptr<BooleanExpression> rightBool = std::dynamic_pointer_cast<BooleanExpression>(right);
+			if(this->operator_symbol == "&&") {
+				return std::make_shared<BooleanExpression>(leftBool->value && rightBool->value);
+			}
+			if(this->operator_symbol == "||") {
+				return std::make_shared<BooleanExpression>(leftBool->value || rightBool->value);
+			}
+			throw std::runtime_error("Invalid operator for BooleanExpression and BooleanExpression");
+		}
+		if(left->type() == "NumberExpression" && right->type() == "BooleanExpression") {
+			std::shared_ptr<daedalus::ast::NumberExpression> leftNb = std::dynamic_pointer_cast<daedalus::ast::NumberExpression>(left);
+			std::shared_ptr<BooleanExpression> rightBool = std::dynamic_pointer_cast<BooleanExpression>(right);
+			if(this->operator_symbol == "&&") {
+				return std::make_shared<BooleanExpression>(leftNb->value && rightBool->value);
+			}
+			if(this->operator_symbol == "||") {
+				return std::make_shared<BooleanExpression>(leftNb->value || rightBool->value);
+			}
+			throw std::runtime_error("Invalid operator for NumberExpression and BooleanExpression");
+		}
+		if(left->type() == "BooleanExpression" && right->type() == "NumberExpression") {
+			std::shared_ptr<BooleanExpression> leftBool = std::dynamic_pointer_cast<BooleanExpression>(left);
+			std::shared_ptr<daedalus::ast::NumberExpression> rightNb = std::dynamic_pointer_cast<daedalus::ast::NumberExpression>(right);
+			if(this->operator_symbol == "&&") {
+				return std::make_shared<BooleanExpression>(leftBool->value && rightNb->value);
+			}
+			if(this->operator_symbol == "||") {
+				return std::make_shared<BooleanExpression>(leftBool->value || rightNb->value);
+			}
+			throw std::runtime_error("Invalid operator for BooleanExpression and NumberExpression");
+		}
+		
+		throw std::runtime_error("Invalid operands");
+	}
 	virtual std::string repr(int indent = 0) {
 		return
 			std::string(indent, '\t') + "(\n" +
@@ -165,8 +242,8 @@ int main(int argc, char** argv) {
 		&setup_interpreter
 	);
 
-	std::string src = "true && false || !false";
-	// std::string src = "3 + 100 * .2 / 1 - 2";
+	// std::string src = "true && false || !false && 0";
+	std::string src = "3 + 100 * .2 / 1 - 2";
 	// std::string src = "(3 + 100 * .2) / (1 - 2)";
 
 	// * LEXER

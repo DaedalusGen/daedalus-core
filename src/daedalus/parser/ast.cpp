@@ -26,11 +26,18 @@ std::string daedalus::ast::Scope::repr(int indent) {
 	return pretty;
 }
 
+std::shared_ptr<daedalus::ast::Expression> daedalus::ast::Expression::get_constexpr() {
+	return nullptr;
+}
+
 daedalus::ast::NumberExpression::NumberExpression(double value) {
 	this->value = value;
 }
 std::string daedalus::ast::NumberExpression::type() {
 	return "NumberExpression";
+}
+std::shared_ptr<daedalus::ast::Expression> daedalus::ast::NumberExpression::get_constexpr() {
+	return this->shared_from_this();
 }
 std::string daedalus::ast::NumberExpression::repr(int indent) {
 	return std::string(indent, '\t') + "NumberExpression(" + std::to_string(this->value) + ")";

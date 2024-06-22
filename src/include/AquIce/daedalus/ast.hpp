@@ -49,19 +49,26 @@ namespace daedalus {
 		 * Expression < Statement
 		 * @note This class is only used for inheritance purpose, never as a value
 		 */
-		class Expression : public Statement {};
+		class Expression : public Statement {
+		public:
+			/**
+			 * Get the constexpr version of the node (can be evaluated by parser)
+			 */
+			virtual std::shared_ptr<Expression> get_constexpr();
+		};
 
 		/**
 		 * NumberExpression < Expression < Statement
 		 */
-		class NumberExpression : public Expression {
+		class NumberExpression : public Expression, public std::enable_shared_from_this<NumberExpression> {
 		public:
 			double value;
 
 			NumberExpression(double value);
 			
 			virtual std::string type() override;
-			virtual std::string repr(int indent = 0);
+			virtual std::shared_ptr<Expression> get_constexpr() override;
+			virtual std::string repr(int indent = 0) override;
 		};
 	}
 }
