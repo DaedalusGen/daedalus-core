@@ -49,7 +49,7 @@ namespace daedalus {
 		 * Expression < Statement
 		 * @note This class is only used for inheritance purpose, never as a value
 		 */
-		class Expression : public Statement {
+		class Expression : public Statement, public std::enable_shared_from_this<Expression> {
 		public:
 			/**
 			 * Get the constexpr version of the node (can be evaluated by parser)
@@ -60,7 +60,7 @@ namespace daedalus {
 		/**
 		 * NumberExpression < Expression < Statement
 		 */
-		class NumberExpression : public Expression, public std::enable_shared_from_this<NumberExpression> {
+		class NumberExpression : public Expression {
 		public:
 			double value;
 
