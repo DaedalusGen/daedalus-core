@@ -453,7 +453,9 @@ void setup_parser(daedalus::parser::Parser& parser) {
 				daedalus::parser::make_node(&parse_binary_expression)
 			},
 		},
-		std::vector<daedalus::parser::ParserFlags>()
+		std::vector<daedalus::parser::ParserFlags>(/*{
+			daedalus::parser::ParserFlags::OPTI_CONST_EXPR
+		}*/)
 	);
 
 	daedalus::parser::demoteTopNode(parser, "NumberExpression");

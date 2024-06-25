@@ -10,6 +10,17 @@
 	return first;
 }
 
+[[nodiscard]] daedalus::lexer::Token expect(std::vector<daedalus::lexer::Token>& tokens, std::string tokenType, std::string error) {
+	daedalus::lexer::Token token = eat(tokens);
+	
+	DAE_ASSERT_TRUE(
+		token.type == tokenType,
+		error
+	)
+
+	return token;
+}
+
 daedalus::parser::Node daedalus::parser::make_node(
 	daedalus::parser::ParseNodeFunction parse_node,
 	bool isTopNode
@@ -28,10 +39,11 @@ void daedalus::parser::demoteTopNode(
 }
 
 std::shared_ptr<daedalus::ast::Expression> daedalus::parser::parse_number_expression(std::vector<daedalus::lexer::Token>& tokens) {
-	if(peek(tokens).type == "NUMBER") {
-		return std::make_shared<daedalus::ast::NumberExpression>(std::stod(eat(tokens).value));
-	}
-	return nullptr;
+	return std::make_shared<daedalus::ast::NumberExpression>(std::stod(expect(
+		tokens,
+		"NUMBER",
+		"Unknown token found (type: " + peek(tokens).type + ", value: " + peek(tokens).value + ")"
+	).value));
 }
 
 void daedalus::parser::register_node(
@@ -87,7 +99,7 @@ std::shared_ptr<daedalus::ast::Statement> daedalus::parser::parse_statement(
 
 	DAE_ASSERT_TRUE(
 		statement != nullptr,
-		std::runtime_error("Unknown token : \"" + peek(tokens).type + "\"")
+		std::runtime_error("Unknown token found (type: " + peek(tokens).type + ", value: " + peek(tokens).value + ")")
 	)
 
 	return statement;
