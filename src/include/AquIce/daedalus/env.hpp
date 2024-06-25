@@ -3,6 +3,8 @@
 
 #include <AquIce/daedalus/values.hpp>
 
+#include "unit.hpp"
+
 #include <string>
 #include <memory>
 #include <algorithm>

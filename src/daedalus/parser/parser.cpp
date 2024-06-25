@@ -85,9 +85,10 @@ std::shared_ptr<daedalus::ast::Statement> daedalus::parser::parse_statement(
 		}
 	}
 
-	if(statement == nullptr) {
-		throw std::runtime_error("Unknown token : \"" + peek(tokens).type + "\"");
-	}
+	DAE_ASSERT_TRUE(
+		statement != nullptr,
+		std::runtime_error("Unknown token : \"" + peek(tokens).type + "\"")
+	)
 
 	return statement;
 }

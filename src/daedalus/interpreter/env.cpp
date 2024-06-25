@@ -20,10 +20,11 @@ std::shared_ptr<daedalus::values::RuntimeValue> daedalus::env::Environment::set_
 	std::shared_ptr<daedalus::values::RuntimeValue> value
 ) {
 	if(!this->has_value(key)) {
-		if(this->parent != nullptr) {
-			return this->parent->set_value(key, value);
-		}
-		throw std::runtime_error("Trying to set non-declared variable " + key);
+		DAE_ASSERT_TRUE(
+			this->parent != nullptr,
+			std::runtime_error("Trying to set non-declared variable " + key)
+		)
+		return this->parent->set_value(key, value);
 	}
 	
 	std::shared_ptr<daedalus::values::RuntimeValue> oldVal = this->get_value(key);
@@ -55,14 +56,16 @@ std::shared_ptr<daedalus::values::RuntimeValue> daedalus::env::Environment::init
 ) {
 
 	for(const auto& [prop_key, prop_value] : properties) {
-		if(std::find(this->envValuesProperties.begin(), this->envValuesProperties.end(), prop_key) == this->envValuesProperties.end()) {
-			throw std::runtime_error("Invalid variable property " + prop_key);
-		}
+		DAE_ASSERT_TRUE(
+			std::find(this->envValuesProperties.begin(), this->envValuesProperties.end(), prop_key) != this->envValuesProperties.end(),
+			std::runtime_error("Invalid variable property " + prop_key)
+		)
 	}
 
-	if(this->has_value(key)) {
-		throw std::runtime_error("Trying to redeclare an existing variable " + key);
-	}
+	DAE_ASSERT_TRUE(
+		!this->has_value(key),
+		std::runtime_error("Trying to redeclare an existing variable " + key)
+	)
 
 	daedalus::env::EnvValue envValue = daedalus::env::EnvValue{
 		value,
@@ -86,10 +89,12 @@ std::shared_ptr<daedalus::values::RuntimeValue> daedalus::env::Environment::init
 
 std::shared_ptr<daedalus::values::RuntimeValue> daedalus::env::Environment::get_value(std::string key) {
 	if(!this->has_value(key)) {
-		if(this->parent != nullptr) {
-			return this->parent->get_value(key);
-		}
-		throw std::runtime_error("Trying to get non-declared variable " + key);
+		DAE_ASSERT_TRUE(
+			this->parent != nullptr,
+			std::runtime_error("Trying to get non-declared variable " + key)
+		)
+		return this->parent->get_value(key);
+		
 	}
 
 	daedalus::env::EnvValue envValue = this->values.at(key);

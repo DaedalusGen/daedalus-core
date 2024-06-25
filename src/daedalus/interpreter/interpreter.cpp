@@ -32,7 +32,11 @@ std::shared_ptr<daedalus::values::RuntimeValue> daedalus::interpreter::evaluate_
 			return evaluateFn(interpreter, statement, env);
 		}
 	}
-	throw std::runtime_error("Trying to evaluate unknown statement " + statement->type());
+	
+	DAE_ASSERT_TRUE(
+		false,
+		std::runtime_error("Trying to evaluate unknown statement " + statement->type())
+	)
 }
 
 std::shared_ptr<daedalus::values::RuntimeValue> daedalus::interpreter::evaluate_scope(

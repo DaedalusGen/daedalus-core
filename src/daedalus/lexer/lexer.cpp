@@ -107,19 +107,18 @@ void daedalus::lexer::lex(
 		// Multi line open
 		if(startswith(src, lexer.multiLineComment.first)) {
 			while(!startswith(src, lexer.multiLineComment.second)) {
-				try {
-					(void)shift(src);
-				} catch(const std::exception& e) {
-					throw std::runtime_error("Comment being opened and not closed before EOF");
-				}
+				DAE_ASSERT_TRY(
+					{ (void)shift(src); },
+					std::runtime_error("Comment being opened and not closed before EOF")
+				)
 			}
 			(void)shift(src, lexer.multiLineComment.second.length());
 			continue;
 		}
-		if(startswith(src, lexer.multiLineComment.second)) {
-			(void)shift(src, lexer.multiLineComment.second.length());
-			throw std::runtime_error("Comment being closed without being opened");
-		}
+		DAE_ASSERT_TRUE(
+			!startswith(src, lexer.multiLineComment.second),
+			std::runtime_error("Comment being closed without being opened")
+		)
 
 		// Lex token
 
@@ -140,11 +139,10 @@ void daedalus::lexer::lex(
 			}
 		}
 
-		if(tokenFound) {
-			continue;
-		}
-
-		throw std::runtime_error("Unknown token in \"" + src + "\"");
+		DAE_ASSERT_TRUE(
+			tokenFound,
+			std::runtime_error("Unknown token in \"" + src + "\"")
+		)
 	}
 
 	tokens.push_back(Token{

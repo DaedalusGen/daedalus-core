@@ -5,6 +5,8 @@
 #include <AquIce/daedalus/values.hpp>
 #include <AquIce/daedalus/env.hpp>
 
+#include "unit.hpp"
+
 #include <string>
 #include <vector>
 #include <memory>

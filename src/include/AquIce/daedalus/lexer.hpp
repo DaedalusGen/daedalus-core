@@ -1,6 +1,8 @@
 #ifndef __DAEDALUS_LEXER__
 #define __DAEDALUS_LEXER__
 
+#include "unit.hpp"
+
 #include <iostream>
 #include <vector>
 #include <string>
