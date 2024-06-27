@@ -15,7 +15,7 @@
 
 [[nodiscard]] daedalus::lexer::Token eat(std::vector<daedalus::lexer::Token>& tokens);
 
-[[nodiscard]] daedalus::lexer::Token expect(std::vector<daedalus::lexer::Token>& tokens, std::string tokenType, std::string error);
+[[nodiscard]] daedalus::lexer::Token expect(std::vector<daedalus::lexer::Token>& tokens, std::string tokenType, std::runtime_error error);
 
 namespace daedalus {
 	namespace parser {
