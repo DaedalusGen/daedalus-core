@@ -10,7 +10,7 @@
 	return first;
 }
 
-[[nodiscard]] daedalus::lexer::Token expect(std::vector<daedalus::lexer::Token>& tokens, std::string tokenType, std::string error) {
+[[nodiscard]] daedalus::lexer::Token expect(std::vector<daedalus::lexer::Token>& tokens, std::string tokenType, std::runtime_error error) {
 	daedalus::lexer::Token token = eat(tokens);
 	
 	DAE_ASSERT_TRUE(
