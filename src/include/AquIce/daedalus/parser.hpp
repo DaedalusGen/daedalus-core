@@ -11,8 +11,6 @@
 #include <unordered_map>
 #include <functional>
 
-#define generate_parser(size)
-
 [[nodiscard]] daedalus::lexer::Token peek(std::vector<daedalus::lexer::Token>& tokens);
 
 [[nodiscard]] daedalus::lexer::Token eat(std::vector<daedalus::lexer::Token>& tokens);
