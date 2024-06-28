@@ -42,7 +42,7 @@ std::shared_ptr<daedalus::ast::Expression> daedalus::parser::parse_number_expres
 	return std::make_shared<daedalus::ast::NumberExpression>(std::stod(expect(
 		tokens,
 		"NUMBER",
-		"Unknown token found (type: " + peek(tokens).type + ", value: " + peek(tokens).value + ")"
+		std::runtime_error("Unknown token found (type: " + peek(tokens).type + ", value: " + peek(tokens).value + ")")
 	).value));
 }
 
