@@ -86,23 +86,17 @@ std::shared_ptr<daedalus::ast::Statement> daedalus::parser::parse_statement(
 	std::shared_ptr<daedalus::ast::Statement> statement = nullptr;
 
 	for(auto& [key, node] : parser.nodesRegister) {
-		if(node.isTopNode && statement == nullptr) {
-			statement = node.parse_node(tokens);
+		if(node.isTopNode) {
 			if(!has_flag(parser, daedalus::parser::ParserFlags::OPTI_CONST_EXPR)) {
-				continue;
+				return node.parse_node(tokens);
 			}
 			if(std::shared_ptr<daedalus::ast::Expression> expression = std::dynamic_pointer_cast<daedalus::ast::Expression>(statement)) {
-				statement = expression->get_constexpr();
+				return expression->get_constexpr();
 			}
 		}
 	}
 
-	DAE_ASSERT_TRUE(
-		statement != nullptr,
-		std::runtime_error("Unknown token found (type: " + peek(tokens).type + ", value: " + peek(tokens).value + ")")
-	)
-
-	return statement;
+	throw std::runtime_error("Unknown token found (type: " + peek(tokens).type + ", value: " + peek(tokens).value + ")");
 }
 
 void daedalus::parser::parse(
