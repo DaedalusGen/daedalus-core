@@ -87,8 +87,9 @@ std::shared_ptr<daedalus::ast::Statement> daedalus::parser::parse_statement(
 
 	for(auto& [key, node] : parser.nodesRegister) {
 		if(node.isTopNode) {
+			statement = node.parse_node(tokens);
 			if(!has_flag(parser, daedalus::parser::ParserFlags::OPTI_CONST_EXPR)) {
-				return node.parse_node(tokens);
+				return statement;
 			}
 			if(std::shared_ptr<daedalus::ast::Expression> expression = std::dynamic_pointer_cast<daedalus::ast::Expression>(statement)) {
 				return expression->get_constexpr();
