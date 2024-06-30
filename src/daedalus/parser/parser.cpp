@@ -38,7 +38,7 @@ void daedalus::parser::demoteTopNode(
 	parser.nodesRegister.at(key).isTopNode = false;
 }
 
-std::shared_ptr<daedalus::ast::Expression> daedalus::parser::parse_number_expression(std::vector<daedalus::lexer::Token>& tokens) {
+std::shared_ptr<daedalus::ast::Expression> daedalus::parser::parse_number_expression(daedalus::parser::Parser& parser, std::vector<daedalus::lexer::Token>& tokens) {
 	return std::make_shared<daedalus::ast::NumberExpression>(std::stod(expect(
 		tokens,
 		"NUMBER",
@@ -87,7 +87,7 @@ std::shared_ptr<daedalus::ast::Statement> daedalus::parser::parse_statement(
 
 	for(auto& [key, node] : parser.nodesRegister) {
 		if(node.isTopNode) {
-			statement = node.parse_node(tokens);
+			statement = node.parse_node(parser, tokens);
 			if(!has_flag(parser, daedalus::parser::ParserFlags::OPTI_CONST_EXPR)) {
 				return statement;
 			}

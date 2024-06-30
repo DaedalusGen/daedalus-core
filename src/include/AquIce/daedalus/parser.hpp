@@ -20,7 +20,9 @@
 namespace daedalus {
 	namespace parser {
 
-		typedef std::function<std::shared_ptr<daedalus::ast::Statement> (std::vector<daedalus::lexer::Token>&)> ParseNodeFunction;
+		typedef struct Parser Parser;
+
+		typedef std::function<std::shared_ptr<daedalus::ast::Statement> (Parser& parser, std::vector<daedalus::lexer::Token>& tokens)> ParseNodeFunction;
 
 		typedef struct Node {
 			ParseNodeFunction parse_node;
@@ -30,11 +32,11 @@ namespace daedalus {
 		enum class ParserFlags {
 			OPTI_CONST_EXPR,
 		};
-
-		typedef struct Parser {
+		
+		struct Parser {
 			std::unordered_map<std::string, Node> nodesRegister;
 			std::vector<ParserFlags> flags;
-		} Parser;
+		};
 
 		Node make_node(
 			ParseNodeFunction parse_node,
@@ -46,7 +48,7 @@ namespace daedalus {
 			std::string key
 		);
 
-		std::shared_ptr<daedalus::ast::Expression> parse_number_expression(std::vector<daedalus::lexer::Token>& tokens);
+		std::shared_ptr<daedalus::ast::Expression> parse_number_expression(Parser& parser, std::vector<daedalus::lexer::Token>& tokens);
 
 		void register_node(
 			Parser& parser,

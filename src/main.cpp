@@ -8,9 +8,9 @@
 
 void setup_lexer(daedalus::lexer::Lexer& lexer);
 
-std::shared_ptr<daedalus::ast::Expression> parse_multiplicative_expression(std::vector<daedalus::lexer::Token>& tokens);
-std::shared_ptr<daedalus::ast::Expression> parse_additive_expression(std::vector<daedalus::lexer::Token>& tokens);
-std::shared_ptr<daedalus::ast::Expression> parse_binary_expression(std::vector<daedalus::lexer::Token>& tokens);
+std::shared_ptr<daedalus::ast::Expression> parse_multiplicative_expression(daedalus::parser::Parser& parser, std::vector<daedalus::lexer::Token>& tokens);
+std::shared_ptr<daedalus::ast::Expression> parse_additive_expression(daedalus::parser::Parser& parser, std::vector<daedalus::lexer::Token>& tokens);
+std::shared_ptr<daedalus::ast::Expression> parse_binary_expression(daedalus::parser::Parser& parser, std::vector<daedalus::lexer::Token>& tokens);
 
 void setup_parser(daedalus::parser::Parser& parser);
 
@@ -339,14 +339,14 @@ void setup_lexer(daedalus::lexer::Lexer& lexer) {
 
 #pragma region Parser Implementation
 
-std::shared_ptr<daedalus::ast::Expression> parse_boolean_expression(std::vector<daedalus::lexer::Token>& tokens) {
+std::shared_ptr<daedalus::ast::Expression> parse_boolean_expression(daedalus::parser::Parser& parser, std::vector<daedalus::lexer::Token>& tokens) {
 	if(peek(tokens).type == "BOOL") {
 		return std::make_shared<BooleanExpression>(eat(tokens).value == "true");
 	}
-	return daedalus::parser::parse_number_expression(tokens);
+	return daedalus::parser::parse_number_expression(parser, tokens);
 }
 
-std::shared_ptr<daedalus::ast::Expression> parse_unary_expression(std::vector<daedalus::lexer::Token>& tokens) {
+std::shared_ptr<daedalus::ast::Expression> parse_unary_expression(daedalus::parser::Parser& parser, std::vector<daedalus::lexer::Token>& tokens) {
 
 	std::string operator_symbol = "";
 
@@ -354,13 +354,13 @@ std::shared_ptr<daedalus::ast::Expression> parse_unary_expression(std::vector<da
 		operator_symbol = eat(tokens).value;
 	}
 	
-	std::shared_ptr<daedalus::ast::Expression> term = parse_boolean_expression(tokens);
+	std::shared_ptr<daedalus::ast::Expression> term = parse_boolean_expression(parser, tokens);
 
 	return operator_symbol.size() == 0 ? term : std::make_shared<UnaryExpression>(term, operator_symbol);
 }
 
-std::shared_ptr<daedalus::ast::Expression> parse_multiplicative_expression(std::vector<daedalus::lexer::Token>& tokens) {
-	std::shared_ptr<daedalus::ast::Expression> left = parse_unary_expression(tokens);
+std::shared_ptr<daedalus::ast::Expression> parse_multiplicative_expression(daedalus::parser::Parser& parser, std::vector<daedalus::lexer::Token>& tokens) {
+	std::shared_ptr<daedalus::ast::Expression> left = parse_unary_expression(parser, tokens);
 
 	if(left == nullptr) {
 		return nullptr;
@@ -371,7 +371,7 @@ std::shared_ptr<daedalus::ast::Expression> parse_multiplicative_expression(std::
 		(peek(tokens).value == "*" || peek(tokens).value == "/")
 	) {
 		std::string operator_symbol = eat(tokens).value;
-		std::shared_ptr<daedalus::ast::Expression> right = parse_multiplicative_expression(tokens);
+		std::shared_ptr<daedalus::ast::Expression> right = parse_multiplicative_expression(parser, tokens);
 		
 		return std::make_shared<BinaryExpression>(
 			left,
@@ -383,8 +383,8 @@ std::shared_ptr<daedalus::ast::Expression> parse_multiplicative_expression(std::
 	return left;
 }
 
-std::shared_ptr<daedalus::ast::Expression> parse_additive_expression(std::vector<daedalus::lexer::Token>& tokens) {
-	std::shared_ptr<daedalus::ast::Expression> left = parse_multiplicative_expression(tokens);
+std::shared_ptr<daedalus::ast::Expression> parse_additive_expression(daedalus::parser::Parser& parser, std::vector<daedalus::lexer::Token>& tokens) {
+	std::shared_ptr<daedalus::ast::Expression> left = parse_multiplicative_expression(parser, tokens);
 
 	if(left == nullptr) {
 		return nullptr;
@@ -395,7 +395,7 @@ std::shared_ptr<daedalus::ast::Expression> parse_additive_expression(std::vector
 		(peek(tokens).value == "+" || peek(tokens).value == "-")
 	) {
 		std::string operator_symbol = eat(tokens).value;
-		std::shared_ptr<daedalus::ast::Expression> right = parse_additive_expression(tokens);
+		std::shared_ptr<daedalus::ast::Expression> right = parse_additive_expression(parser, tokens);
 		
 		return std::make_shared<BinaryExpression>(
 			left,
@@ -407,8 +407,8 @@ std::shared_ptr<daedalus::ast::Expression> parse_additive_expression(std::vector
 	return left;
 }
 
-std::shared_ptr<daedalus::ast::Expression> parse_logical_expression(std::vector<daedalus::lexer::Token>& tokens) {
-	std::shared_ptr<daedalus::ast::Expression> left = parse_additive_expression(tokens);
+std::shared_ptr<daedalus::ast::Expression> parse_logical_expression(daedalus::parser::Parser& parser, std::vector<daedalus::lexer::Token>& tokens) {
+	std::shared_ptr<daedalus::ast::Expression> left = parse_additive_expression(parser, tokens);
 
 	if(left == nullptr) {
 		return nullptr;
@@ -419,7 +419,7 @@ std::shared_ptr<daedalus::ast::Expression> parse_logical_expression(std::vector<
 		(peek(tokens).value == "&&" || peek(tokens).value == "||")
 	) {
 		std::string operator_symbol = eat(tokens).value;
-		std::shared_ptr<daedalus::ast::Expression> right = parse_logical_expression(tokens);
+		std::shared_ptr<daedalus::ast::Expression> right = parse_logical_expression(parser, tokens);
 		
 		return std::make_shared<BinaryExpression>(
 			left,
@@ -431,8 +431,8 @@ std::shared_ptr<daedalus::ast::Expression> parse_logical_expression(std::vector<
 	return left;
 }
 
-std::shared_ptr<daedalus::ast::Expression> parse_binary_expression(std::vector<daedalus::lexer::Token>& tokens) {
-	return parse_logical_expression(tokens);
+std::shared_ptr<daedalus::ast::Expression> parse_binary_expression(daedalus::parser::Parser& parser, std::vector<daedalus::lexer::Token>& tokens) {
+	return parse_logical_expression(parser, tokens);
 }
 
 void setup_parser(daedalus::parser::Parser& parser) {
