@@ -4,12 +4,12 @@ daedalus::env::Environment::Environment(
 	std::vector<std::string> envValuesProperties,
 	std::vector<EnvValidationRule> validationRules,
 	std::shared_ptr<Environment> parent
-) {
-	this->envValuesProperties = envValuesProperties;
-	this->validationRules = validationRules;
-	this->parent = parent;
-	this->values = std::unordered_map<std::string, EnvValue>();
-}
+) :
+	envValuesProperties(envValuesProperties),
+	validationRules(validationRules),
+	parent(parent),
+	values()
+{}
 
 bool daedalus::env::Environment::has_value(std::string key) {
 	return this->values.find(key) != this->values.end();

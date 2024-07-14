@@ -7,9 +7,9 @@ std::string daedalus::ast::Statement::repr(int indent) {
 	return std::string(indent, '\t') + "Statement";
 }
 
-daedalus::ast::Scope::Scope(std::vector<std::shared_ptr<daedalus::ast::Statement>> body) {
-	this->body = body;
-}
+daedalus::ast::Scope::Scope(std::vector<std::shared_ptr<daedalus::ast::Statement>> body) :
+	body(body)
+{}
 			
 std::string daedalus::ast::Scope::type() {
 	return "Scope";
@@ -30,9 +30,10 @@ std::shared_ptr<daedalus::ast::Expression> daedalus::ast::Expression::get_conste
 	return nullptr;
 }
 
-daedalus::ast::NumberExpression::NumberExpression(double value) {
-	this->value = value;
-}
+daedalus::ast::NumberExpression::NumberExpression(double value) :
+	value(value)
+{}
+
 std::string daedalus::ast::NumberExpression::type() {
 	return "NumberExpression";
 }

@@ -29,9 +29,10 @@ bool daedalus::values::NullValue::IsTrue() {
 	return false;
 }
 
-daedalus::values::NumberValue::NumberValue(double value) {
-	this->value = value;
-}
+daedalus::values::NumberValue::NumberValue(double value) :
+	value(value)
+{}
+
 double daedalus::values::NumberValue::get() {
 	return this->value;
 }
