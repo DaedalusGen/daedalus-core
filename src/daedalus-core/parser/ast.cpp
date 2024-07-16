@@ -7,7 +7,7 @@ std::string daedalus::core::ast::Statement::repr(int indent) {
 	return std::string(indent, '\t') + "Statement";
 }
 
-daedalus::core::ast::Scope::Scope(std::vector<std::shared_ptr<daedalus::core::ast::Statement>> body) :
+daedalus::core::ast::Scope::Scope(std::vector<std::shared_ptr<daedalus::core::ast::Expression>> body) :
 	body(body)
 {}
 
@@ -17,7 +17,7 @@ std::string daedalus::core::ast::Scope::type() {
 std::string daedalus::core::ast::Scope::repr(int indent) {
 	std::string pretty = std::string(indent, '\t') + "{\n";
 
-	for(std::shared_ptr<daedalus::core::ast::Statement> statement : this->body) {
+	for(std::shared_ptr<daedalus::core::ast::Expression> statement : this->body) {
 		pretty += statement->repr(indent + 1) + "\n";
 	}
 

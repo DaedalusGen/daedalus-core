@@ -79,19 +79,19 @@ bool daedalus::core::parser::has_flag(
 	) != parser.flags.end();
 }
 
-std::shared_ptr<daedalus::core::ast::Statement> daedalus::core::parser::parse_statement(
+std::shared_ptr<daedalus::core::ast::Expression> daedalus::core::parser::parse_expression(
 	daedalus::core::parser::Parser& parser,
 	std::vector<daedalus::core::lexer::Token>& tokens
 ) {
-	std::shared_ptr<daedalus::core::ast::Statement> statement = nullptr;
+	std::shared_ptr<daedalus::core::ast::Expression> expression = nullptr;
 
 	for(auto& [key, node] : parser.nodesRegister) {
 		if(node.isTopNode) {
-			statement = node.parse_node(parser, tokens);
+			expression = node.parse_node(parser, tokens);
 			if(!has_flag(parser, daedalus::core::parser::ParserFlags::OPTI_CONST_EXPR)) {
-				return statement;
+				return expression;
 			}
-			if(std::shared_ptr<daedalus::core::ast::Expression> expression = std::dynamic_pointer_cast<daedalus::core::ast::Expression>(statement)) {
+			if(std::shared_ptr<daedalus::core::ast::Expression> expression = std::dynamic_pointer_cast<daedalus::core::ast::Expression>(expression)) {
 				return expression->get_constexpr();
 			}
 		}
@@ -107,7 +107,7 @@ void daedalus::core::parser::parse(
 ) {
 	while(peek(tokens).type != "EOF") {
 		program->body.push_back(
-			parse_statement(parser, tokens)
+			parse_expression(parser, tokens)
 		);
 	}
 }

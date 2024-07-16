@@ -38,9 +38,9 @@ namespace daedalus {
     		 */
     		class Scope : public Statement {
     		public:
-    			std::vector<std::shared_ptr<Statement>> body;
+    			std::vector<std::shared_ptr<Expression>> body;
 
-    			Scope(std::vector<std::shared_ptr<Statement>> body = std::vector<std::shared_ptr<Statement>>());
+    			Scope(std::vector<std::shared_ptr<Expression>> body = std::vector<std::shared_ptr<Expression>>());
 
     			virtual std::string type() override;
     			virtual std::string repr(int indent = 0) override;
