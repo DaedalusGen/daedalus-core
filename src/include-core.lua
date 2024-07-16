@@ -3,9 +3,10 @@ project "Daedalus-Core"
 	location "build/daedalus-core"
 
 	files {
-		"daedalus/core.cpp",
-		"daedalus/**/*.cpp",
-		"include/AquIce/daedalus/*.hpp"
+		"daedalus-core/core.cpp",
+		"daedalus-core/**/*.cpp",
+		"include/daedalus/core/core.hpp",
+		"include/daedalus/core/**/*.hpp"
 	}
 
 	includedirs { "include/" }

@@ -1,4 +1,4 @@
-#include <AquIce/daedalus/lexer.hpp>
+#include <daedalus/core/lexer/lexer.hpp>
 
 [[nodiscard]] char peek(std::string str) {
 	return str.at(0);
