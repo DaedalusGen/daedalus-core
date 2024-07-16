@@ -2,7 +2,7 @@ project "Daedalus-Core"
 	language "C++"
 	location "build/daedalus-core"
 	entrypoint "main"
-	
+
 	files {
 		"main.cpp",
 		"daedalus/core.cpp",

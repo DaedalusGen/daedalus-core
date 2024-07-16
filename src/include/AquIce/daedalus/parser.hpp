@@ -1,9 +1,9 @@
 #ifndef __DAEDALUS_PARSER__
 #define __DAEDALUS_PARSER__
 
-#include "lexer.hpp"
-#include "ast.hpp"
-#include "unit.hpp"
+#include <AquIce/daedalus/lexer.hpp>
+#include <AquIce/daedalus/ast.hpp>
+#include <AquIce/daedalus/assert.hpp>
 
 #include <string>
 #include <vector>
@@ -11,73 +11,75 @@
 #include <unordered_map>
 #include <functional>
 
-[[nodiscard]] daedalus::lexer::Token peek(std::vector<daedalus::lexer::Token>& tokens);
+[[nodiscard]] daedalus::core::lexer::Token peek(std::vector<daedalus::core::lexer::Token>& tokens);
 
-[[nodiscard]] daedalus::lexer::Token eat(std::vector<daedalus::lexer::Token>& tokens);
+[[nodiscard]] daedalus::core::lexer::Token eat(std::vector<daedalus::core::lexer::Token>& tokens);
 
-[[nodiscard]] daedalus::lexer::Token expect(std::vector<daedalus::lexer::Token>& tokens, std::string tokenType, std::runtime_error error);
+[[nodiscard]] daedalus::core::lexer::Token expect(std::vector<daedalus::core::lexer::Token>& tokens, std::string tokenType, std::runtime_error error);
 
 namespace daedalus {
-	namespace parser {
+    namespace core {
+    	namespace parser {
 
-		typedef struct Parser Parser;
+    		typedef struct Parser Parser;
 
-		typedef std::function<std::shared_ptr<daedalus::ast::Statement> (Parser& parser, std::vector<daedalus::lexer::Token>& tokens)> ParseNodeFunction;
+    		typedef std::function<std::shared_ptr<daedalus::core::ast::Statement> (Parser& parser, std::vector<daedalus::core::lexer::Token>& tokens)> ParseNodeFunction;
 
-		typedef struct Node {
-			ParseNodeFunction parse_node;
-			bool isTopNode;
-		} Node;
+    		typedef struct Node {
+    			ParseNodeFunction parse_node;
+    			bool isTopNode;
+    		} Node;
 
-		enum class ParserFlags {
-			OPTI_CONST_EXPR,
-		};
-		
-		struct Parser {
-			std::unordered_map<std::string, Node> nodesRegister;
-			std::vector<ParserFlags> flags;
-		};
+    		enum class ParserFlags {
+    			OPTI_CONST_EXPR,
+    		};
 
-		Node make_node(
-			ParseNodeFunction parse_node,
-			bool isTopNode = true
-		);
+    		struct Parser {
+    			std::unordered_map<std::string, Node> nodesRegister;
+    			std::vector<ParserFlags> flags;
+    		};
 
-		void demoteTopNode(
-			Parser& parser,
-			std::string key
-		);
+    		Node make_node(
+    			ParseNodeFunction parse_node,
+    			bool isTopNode = true
+    		);
 
-		std::shared_ptr<daedalus::ast::Expression> parse_number_expression(Parser& parser, std::vector<daedalus::lexer::Token>& tokens);
+    		void demoteTopNode(
+    			Parser& parser,
+    			std::string key
+    		);
 
-		void register_node(
-			Parser& parser,
-			std::string key,
-			Node node
-		);
+    		std::shared_ptr<daedalus::core::ast::Expression> parse_number_expression(Parser& parser, std::vector<daedalus::core::lexer::Token>& tokens);
 
-		void setup_parser(
-			Parser& parser,
-			std::unordered_map<std::string, Node> nodesRegister,
-			std::vector<ParserFlags> flags = std::vector<ParserFlags>({ ParserFlags::OPTI_CONST_EXPR })
-		);
+    		void register_node(
+    			Parser& parser,
+    			std::string key,
+    			Node node
+    		);
 
-		bool has_flag(
-			Parser& parser,
-			ParserFlags flag
-		);
+    		void setup_parser(
+    			Parser& parser,
+    			std::unordered_map<std::string, Node> nodesRegister,
+    			std::vector<ParserFlags> flags = std::vector<ParserFlags>({ ParserFlags::OPTI_CONST_EXPR })
+    		);
 
-		std::shared_ptr<daedalus::ast::Statement> parse_statement(
-			Parser& parser,
-			std::vector<daedalus::lexer::Token>& tokens
-		);
+    		bool has_flag(
+    			Parser& parser,
+    			ParserFlags flag
+    		);
 
-		void parse(
-			Parser& parser,
-			std::shared_ptr<daedalus::ast::Scope> program,
-			std::vector<daedalus::lexer::Token>& tokens
-		);
-	}
+    		std::shared_ptr<daedalus::core::ast::Statement> parse_statement(
+    			Parser& parser,
+    			std::vector<daedalus::core::lexer::Token>& tokens
+    		);
+
+    		void parse(
+    			Parser& parser,
+    			std::shared_ptr<daedalus::core::ast::Scope> program,
+    			std::vector<daedalus::core::lexer::Token>& tokens
+    		);
+    	}
+    }
 }
 
 #endif // __DAEDALUS_PARSER__

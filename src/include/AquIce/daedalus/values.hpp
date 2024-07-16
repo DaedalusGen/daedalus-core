@@ -2,78 +2,80 @@
 #define __DAEDALUS_VALUES__
 
 #include <string>
-#include <memory>
 
 namespace daedalus {
-	namespace values {
+    namespace core {
+        namespace values {
 
-		#pragma region Classes
+    		#pragma region Classes
 
-		/**
-		 * RuntimeValue
-		 * @note This class is only used for inheritance purpose, never as a value
-		 */
-		class RuntimeValue {
-		public:
-			/**
-			 * Get the type of the value
-			 * @return The type
-			 */
-			virtual std::string type();
+    		/**
+    		 * RuntimeValue
+    		 * @note This class is only used for inheritance purpose, never as a value
+    		 */
+    		class RuntimeValue {
+    		public:
+    			/**
+    			 * Get the type of the value
+    			 * @return The type
+    			 */
+    			virtual std::string type();
 
-			/**
-			 * Get the string representation of the value
-			 * @return The string representation
-			 */
-			virtual std::string repr();
-			
-			/**
-			 * Checks whether the value is true or false
-			 */
-			virtual bool IsTrue();
-		};
+    			/**
+    			 * Get the string representation of the value
+    			 * @return The string representation
+    			 */
+    			virtual std::string repr();
 
-		/**
-		 * NullValue < RuntimeValue
-		 */
-		class NullValue: public RuntimeValue {
-		public:
-			/**
-			 * Create a new Null Value
-			 */
-			NullValue();
-			
-			virtual std::string type() override;
-			
-			virtual std::string repr() override;
-			
-			virtual bool IsTrue() override;
-		};
+    			/**
+    			 * Checks whether the value is true or false
+    			 */
+    			virtual bool IsTrue();
+    		};
 
-		/**
-		 * NumberValue < RuntimeValue
-		 */
-		class NumberValue: public RuntimeValue {
-		public:
-			/**
-			 * Create a new Null Value
-			 */
-			NumberValue(double value = 0);
-			
-			double get();
+    		/**
+    		 * NullValue < RuntimeValue
+    		 */
+    		class NullValue: public RuntimeValue {
+    		public:
+    			/**
+    			 * Create a new Null Value
+    			 */
+    			NullValue();
 
-			virtual std::string type() override;
-			
-			virtual std::string repr() override;
-			
-			virtual bool IsTrue() override;
+    			virtual std::string type() override;
 
-		private:
-			double value;
-		};
+    			virtual std::string repr() override;
 
-		#pragma endregion
-	}
+    			virtual bool IsTrue() override;
+    		};
+
+    		/**
+    		 * NumberValue < RuntimeValue
+    		 */
+    		class NumberValue: public RuntimeValue {
+    		public:
+    			/**
+    			 * Create a new Null Value
+    			 */
+    			NumberValue(double value = 0);
+
+    			double get();
+
+    			virtual std::string type() override;
+
+    			virtual std::string repr() override;
+
+    			virtual bool IsTrue() override;
+
+    		private:
+    			double value;
+    		};
+
+    		#pragma endregion
+
+    	}
+    }
 }
 
 #endif // __DAEDALUS_VALUES__

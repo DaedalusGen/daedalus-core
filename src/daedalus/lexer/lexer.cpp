@@ -23,14 +23,14 @@ bool startswith(std::string str, std::string substr) {
 	return str.rfind(substr, 0) == 0;
 }
 
-std::string daedalus::lexer::repr(const daedalus::lexer::Token& token) {
+std::string daedalus::core::lexer::repr(const daedalus::core::lexer::Token& token) {
 	std::string pretty = "Type: " + token.type;
 	pretty += "\nValue: " + token.value;
 	return pretty;
 }
 
-daedalus::lexer::TokenType daedalus::lexer::make_token_type(std::string name) {
-	return daedalus::lexer::TokenType{
+daedalus::core::lexer::TokenType daedalus::core::lexer::make_token_type(std::string name) {
+	return daedalus::core::lexer::TokenType{
 		name,
 		[name](std::string src) -> std::string {
 			if(startswith(src, name)) {
@@ -41,8 +41,8 @@ daedalus::lexer::TokenType daedalus::lexer::make_token_type(std::string name) {
 	};
 }
 
-daedalus::lexer::TokenType daedalus::lexer::make_token_type(std::string name, std::string value) {
-	return daedalus::lexer::TokenType{
+daedalus::core::lexer::TokenType daedalus::core::lexer::make_token_type(std::string name, std::string value) {
+	return daedalus::core::lexer::TokenType{
 		name,
 		[value](std::string src) -> std::string {
 			if(startswith(src, value)) {
@@ -53,16 +53,16 @@ daedalus::lexer::TokenType daedalus::lexer::make_token_type(std::string name, st
 	};
 }
 
-daedalus::lexer::TokenType daedalus::lexer::make_token_type(std::string name, std::function<std::string(std::string)> lex_token) {
-	return daedalus::lexer::TokenType{
+daedalus::core::lexer::TokenType daedalus::core::lexer::make_token_type(std::string name, std::function<std::string(std::string)> lex_token) {
+	return daedalus::core::lexer::TokenType{
 		name,
 		lex_token
 	};
 }
 
-void daedalus::lexer::setup_lexer(
-	daedalus::lexer::Lexer& lexer,
-	const std::vector<daedalus::lexer::TokenType>& tokenTypes,
+void daedalus::core::lexer::setup_lexer(
+	daedalus::core::lexer::Lexer& lexer,
+	const std::vector<daedalus::core::lexer::TokenType>& tokenTypes,
 	std::vector<char> whitespaces,
 	std::string singleLineComment,
 	std::pair<std::string, std::string> multiLineComment,
@@ -81,9 +81,9 @@ void daedalus::lexer::setup_lexer(
 	lexer.escapeCharacter = escapeCharacter;
 }
 
-void daedalus::lexer::lex(
-	daedalus::lexer::Lexer& lexer,
-	std::vector<daedalus::lexer::Token>& tokens,
+void daedalus::core::lexer::lex(
+	daedalus::core::lexer::Lexer& lexer,
+	std::vector<daedalus::core::lexer::Token>& tokens,
 	std::string src
 ) {
 	while(src.length() > 0) {
@@ -124,12 +124,12 @@ void daedalus::lexer::lex(
 
 		bool tokenFound = false;
 
-		for(const daedalus::lexer::TokenType& tokenType : lexer.tokenTypes) {
+		for(const daedalus::core::lexer::TokenType& tokenType : lexer.tokenTypes) {
 			std::string tokenValue = tokenType.lex_token(src);
 			if(tokenValue.length() != 0) {
 				(void)shift(src, tokenValue.length());
 				tokens.push_back(
-					daedalus::lexer::Token{
+					daedalus::core::lexer::Token{
 						tokenType.name,
 						tokenValue
 					}

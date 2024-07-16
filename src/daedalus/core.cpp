@@ -1,17 +1,17 @@
 #include <AquIce/daedalus/core.hpp>
 
-daedalus::Daedalus daedalus::setup_daedalus(
-	daedalus::LexerConfigFunction lexerConfigFunction,
-	daedalus::ParserConfigFunction parserConfigFunction,
-	daedalus::InterpreterConfigFunction interpreterConfigFunction
+daedalus::core::Daedalus daedalus::core::setup_daedalus(
+	daedalus::core::LexerConfigFunction lexerConfigFunction,
+	daedalus::core::ParserConfigFunction parserConfigFunction,
+	daedalus::core::InterpreterConfigFunction interpreterConfigFunction
 ) {
-	daedalus::lexer::Lexer lexer;
-	daedalus::parser::Parser parser;
-	daedalus::interpreter::Interpreter interpreter;
+	daedalus::core::lexer::Lexer lexer;
+	daedalus::core::parser::Parser parser;
+	daedalus::core::interpreter::Interpreter interpreter;
 
 	lexerConfigFunction(lexer);
 	parserConfigFunction(parser);
 	interpreterConfigFunction(interpreter);
 
-	return daedalus::Daedalus{ lexer, parser, interpreter };
+	return daedalus::core::Daedalus{ lexer, parser, interpreter };
 }

@@ -1,16 +1,14 @@
 #include <AquIce/daedalus/values.hpp>
 
-#include <stdexcept>
-
 #pragma region RuntimeValue
 
-std::string daedalus::values::RuntimeValue::type() {
+std::string daedalus::core::values::RuntimeValue::type() {
 	return "RuntimeValue";
 };
-std::string daedalus::values::RuntimeValue::repr() {
+std::string daedalus::core::values::RuntimeValue::repr() {
 	return "RuntimeValue";
 }
-bool daedalus::values::RuntimeValue::IsTrue() {
+bool daedalus::core::values::RuntimeValue::IsTrue() {
 	return false;
 }
 
@@ -18,31 +16,31 @@ bool daedalus::values::RuntimeValue::IsTrue() {
 
 #pragma region NullValue
 
-daedalus::values::NullValue::NullValue() {}
-std::string daedalus::values::NullValue::type() {
+daedalus::core::values::NullValue::NullValue() {}
+std::string daedalus::core::values::NullValue::type() {
 	return "NullValue";
 }
-std::string daedalus::values::NullValue::repr() {
+std::string daedalus::core::values::NullValue::repr() {
 	return "null";
 }
-bool daedalus::values::NullValue::IsTrue() {
+bool daedalus::core::values::NullValue::IsTrue() {
 	return false;
 }
 
-daedalus::values::NumberValue::NumberValue(double value) :
+daedalus::core::values::NumberValue::NumberValue(double value) :
 	value(value)
 {}
 
-double daedalus::values::NumberValue::get() {
+double daedalus::core::values::NumberValue::get() {
 	return this->value;
 }
-std::string daedalus::values::NumberValue::type() {
+std::string daedalus::core::values::NumberValue::type() {
 	return "NumberValue";
 }
-std::string daedalus::values::NumberValue::repr() {
+std::string daedalus::core::values::NumberValue::repr() {
 	return std::to_string(this->value);
 }
-bool daedalus::values::NumberValue::IsTrue() {
+bool daedalus::core::values::NumberValue::IsTrue() {
 	return this->value != 0;
 }
 
