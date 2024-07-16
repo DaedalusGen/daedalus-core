@@ -91,9 +91,7 @@ std::shared_ptr<daedalus::core::ast::Expression> daedalus::core::parser::parse_e
 			if(!has_flag(parser, daedalus::core::parser::ParserFlags::OPTI_CONST_EXPR)) {
 				return expression;
 			}
-			if(std::shared_ptr<daedalus::core::ast::Expression> expression = std::dynamic_pointer_cast<daedalus::core::ast::Expression>(expression)) {
-				return expression->get_constexpr();
-			}
+			return expression->get_constexpr();
 		}
 	}
 
