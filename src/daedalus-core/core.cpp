@@ -1,4 +1,4 @@
-#include <AquIce/daedalus/core.hpp>
+#include <daedalus/core/core.hpp>
 
 daedalus::core::Daedalus daedalus::core::setup_daedalus(
 	daedalus::core::LexerConfigFunction lexerConfigFunction,

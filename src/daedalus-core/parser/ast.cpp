@@ -1,4 +1,5 @@
 #include <daedalus/core/parser/ast.hpp>
+#include <memory>
 
 std::string daedalus::core::ast::Statement::type() {
 	return "Statement";
@@ -7,12 +8,19 @@ std::string daedalus::core::ast::Statement::repr(int indent) {
 	return std::string(indent, '\t') + "Statement";
 }
 
+std::shared_ptr<daedalus::core::ast::Expression> daedalus::core::ast::Expression::get_constexpr() {
+	return nullptr;
+}
+
 daedalus::core::ast::Scope::Scope(std::vector<std::shared_ptr<daedalus::core::ast::Expression>> body) :
 	body(body)
 {}
 
 std::string daedalus::core::ast::Scope::type() {
 	return "Scope";
+}
+std::shared_ptr<daedalus::core::ast::Expression> daedalus::core::ast::Scope::get_constexpr() {
+	return this->body.at(this->body.size() - 1);
 }
 std::string daedalus::core::ast::Scope::repr(int indent) {
 	std::string pretty = std::string(indent, '\t') + "{\n";
@@ -24,10 +32,6 @@ std::string daedalus::core::ast::Scope::repr(int indent) {
 	pretty += std::string(indent, '\t') + "\n}";
 
 	return pretty;
-}
-
-std::shared_ptr<daedalus::core::ast::Expression> daedalus::core::ast::Expression::get_constexpr() {
-	return nullptr;
 }
 
 daedalus::core::ast::NumberExpression::NumberExpression(double value) :

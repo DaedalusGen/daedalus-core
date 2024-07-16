@@ -33,20 +33,6 @@ namespace daedalus {
     		};
 
     		/**
-    		 * Scope < Statement
-    		 * @note This class is only used for inheritance purpose or as a general wrapper for a program
-    		 */
-    		class Scope : public Statement {
-    		public:
-    			std::vector<std::shared_ptr<Expression>> body;
-
-    			Scope(std::vector<std::shared_ptr<Expression>> body = std::vector<std::shared_ptr<Expression>>());
-
-    			virtual std::string type() override;
-    			virtual std::string repr(int indent = 0) override;
-    		};
-
-    		/**
     		 * Expression < Statement
     		 * @note This class is only used for inheritance purpose, never as a value
     		 */
@@ -56,6 +42,21 @@ namespace daedalus {
     			 * Get the constexpr version of the node (can be evaluated by parser)
     			 */
     			virtual std::shared_ptr<Expression> get_constexpr();
+    		};
+
+            /**
+    		 * Scope < Statement
+    		 * @note This class is only used for inheritance purpose or as a general wrapper for a program
+    		 */
+    		class Scope : public Expression {
+    		public:
+    			std::vector<std::shared_ptr<Expression>> body;
+
+    			Scope(std::vector<std::shared_ptr<Expression>> body = std::vector<std::shared_ptr<Expression>>());
+
+    			virtual std::string type() override;
+                virtual std::shared_ptr<Expression> get_constexpr() override;
+    			virtual std::string repr(int indent = 0) override;
     		};
 
     		/**
