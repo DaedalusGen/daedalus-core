@@ -20,16 +20,21 @@ std::string daedalus::core::ast::Scope::type() {
 	return "Scope";
 }
 std::shared_ptr<daedalus::core::ast::Expression> daedalus::core::ast::Scope::get_constexpr() {
-	return this->body.at(this->body.size() - 1);
+    std::vector<std::shared_ptr<daedalus::core::ast::Expression>> body = std::vector<std::shared_ptr<daedalus::core::ast::Expression>>();
+    for (const std::shared_ptr<daedalus::core::ast::Expression> expression : this->body) {
+        body.push_back(expression->get_constexpr());
+    }
+    this->body = body;
+    return this->shared_from_this();
 }
 std::string daedalus::core::ast::Scope::repr(int indent) {
 	std::string pretty = std::string(indent, '\t') + "{\n";
 
-	for(std::shared_ptr<daedalus::core::ast::Expression> statement : this->body) {
-		pretty += statement->repr(indent + 1) + "\n";
+	for(std::shared_ptr<daedalus::core::ast::Expression> expression : this->body) {
+		pretty += expression->repr(indent + 1) + "\n";
 	}
 
-	pretty += std::string(indent, '\t') + "\n}";
+	pretty += "\n" + std::string(indent, '\t') + "}";
 
 	return pretty;
 }

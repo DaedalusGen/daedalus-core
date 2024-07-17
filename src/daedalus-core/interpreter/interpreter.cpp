@@ -42,7 +42,7 @@ std::shared_ptr<daedalus::core::values::RuntimeValue> daedalus::core::interprete
 std::shared_ptr<daedalus::core::values::RuntimeValue> daedalus::core::interpreter::evaluate_scope(
 	daedalus::core::interpreter::Interpreter& interpreter,
 	std::shared_ptr<daedalus::core::ast::Scope> scope,
-	std::unordered_map<std::string, std::string>& results,
+	std::vector<daedalus::core::interpreter::RuntimeResult>& results,
 	std::shared_ptr<daedalus::core::env::Environment> scope_env,
 	std::shared_ptr<daedalus::core::env::Environment> parent_env
 ) {
@@ -60,14 +60,17 @@ std::shared_ptr<daedalus::core::values::RuntimeValue> daedalus::core::interprete
 	for(std::shared_ptr<daedalus::core::ast::Statement> statement : scope->body) {
 		result = daedalus::core::interpreter::evaluate_statement(interpreter, statement, scope_env);
 		prev_result = result;
-		results[statement->repr()] = result->repr();
+		results.push_back(daedalus::core::interpreter::RuntimeResult{
+		    statement->repr(),
+			result->repr()
+		});
 	}
 	return result;
 }
 
 void daedalus::core::interpreter::interpret(
 	daedalus::core::interpreter::Interpreter& interpreter,
-	std::unordered_map<std::string, std::string>& results,
+	std::vector<daedalus::core::interpreter::RuntimeResult>& results,
 	std::shared_ptr<daedalus::core::ast::Scope> program
 ) {
 	std::shared_ptr<daedalus::core::env::Environment> env = std::make_shared<daedalus::core::env::Environment>(

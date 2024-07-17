@@ -27,8 +27,6 @@ std::shared_ptr<daedalus::core::values::RuntimeValue> daedalus::core::env::Envir
 		return this->parent->set_value(key, value);
 	}
 
-	std::shared_ptr<daedalus::core::values::RuntimeValue> oldVal = this->get_value(key);
-
 	daedalus::core::env::EnvValue envValue = daedalus::core::env::EnvValue{
 		value,
 		this->values.at(key).properties
@@ -46,7 +44,7 @@ std::shared_ptr<daedalus::core::values::RuntimeValue> daedalus::core::env::Envir
 
 	this->values.at(key) = envValue;
 
-	return oldVal;
+	return value;
 }
 
 std::shared_ptr<daedalus::core::values::RuntimeValue> daedalus::core::env::Environment::init_value(

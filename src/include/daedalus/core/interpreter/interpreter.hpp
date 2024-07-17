@@ -37,6 +37,11 @@ namespace daedalus {
     			std::vector<daedalus::core::env::EnvValidationRule> validationRules
     		);
 
+            typedef struct RuntimeResult {
+                std::string expressionRepr;
+                std::string valueRepr;
+            } RuntimeResult;
+
     		std::shared_ptr<daedalus::core::values::RuntimeValue> evaluate_statement(
     			Interpreter& interpreter,
     			std::shared_ptr<daedalus::core::ast::Statement> statement,
@@ -46,14 +51,14 @@ namespace daedalus {
     		std::shared_ptr<daedalus::core::values::RuntimeValue> evaluate_scope(
     			Interpreter& interpreter,
     			std::shared_ptr<daedalus::core::ast::Scope> scope,
-    			std::unordered_map<std::string, std::string>& results,
+    			std::vector<RuntimeResult>& results,
     			std::shared_ptr<daedalus::core::env::Environment> scope_env = nullptr,
     			std::shared_ptr<daedalus::core::env::Environment> parent_env = nullptr
     		);
 
     		void interpret(
     			Interpreter& interpreter,
-    			std::unordered_map<std::string, std::string>& results,
+    			std::vector<RuntimeResult>& results,
     			std::shared_ptr<daedalus::core::ast::Scope> program
     		);
     	}
