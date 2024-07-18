@@ -23,7 +23,7 @@ namespace daedalus {
 
     		typedef struct Parser Parser;
 
-    		typedef std::function<std::shared_ptr<daedalus::core::ast::Expression> (Parser& parser, std::vector<daedalus::core::lexer::Token>& tokens)> ParseNodeFunction;
+    		typedef std::function<std::shared_ptr<daedalus::core::ast::Expression> (Parser& parser, std::vector<daedalus::core::lexer::Token>& tokens, bool needsSemicolon)> ParseNodeFunction;
 
     		typedef struct Node {
     			ParseNodeFunction parse_node;
@@ -49,7 +49,7 @@ namespace daedalus {
     			std::string key
     		);
 
-    		std::shared_ptr<daedalus::core::ast::Expression> parse_number_expression(Parser& parser, std::vector<daedalus::core::lexer::Token>& tokens);
+    		std::shared_ptr<daedalus::core::ast::Expression> parse_number_expression(Parser& parser, std::vector<daedalus::core::lexer::Token>& tokens, bool needsSemicolon);
 
     		void register_node(
     			Parser& parser,
@@ -70,7 +70,8 @@ namespace daedalus {
 
     		std::shared_ptr<daedalus::core::ast::Expression> parse_expression(
     			Parser& parser,
-    			std::vector<daedalus::core::lexer::Token>& tokens
+    			std::vector<daedalus::core::lexer::Token>& tokens,
+                bool needsSemicolon
     		);
 
     		void parse(

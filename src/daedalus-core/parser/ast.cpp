@@ -34,7 +34,7 @@ std::string daedalus::core::ast::Scope::repr(int indent) {
 		pretty += expression->repr(indent + 1) + "\n";
 	}
 
-	pretty += "\n" + std::string(indent, '\t') + "}";
+	pretty += std::string(indent, '\t') + "}";
 
 	return pretty;
 }

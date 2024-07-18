@@ -3,12 +3,12 @@
 
 #include <daedalus/core/tools/assert.hpp>
 
-#include <iostream>
-#include <vector>
-#include <string>
 #include <algorithm>
-#include <stdexcept>
 #include <functional>
+#include <iostream>
+#include <string>
+#include <stdexcept>
+#include <vector>
 
 /**
  * Peek at the first character a string

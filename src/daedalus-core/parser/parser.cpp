@@ -38,7 +38,7 @@ void daedalus::core::parser::demoteTopNode(
 	parser.nodesRegister.at(key).isTopNode = false;
 }
 
-std::shared_ptr<daedalus::core::ast::Expression> daedalus::core::parser::parse_number_expression(daedalus::core::parser::Parser& parser, std::vector<daedalus::core::lexer::Token>& tokens) {
+std::shared_ptr<daedalus::core::ast::Expression> daedalus::core::parser::parse_number_expression(daedalus::core::parser::Parser& parser, std::vector<daedalus::core::lexer::Token>& tokens, bool needsSemicolon) {
 	return std::make_shared<daedalus::core::ast::NumberExpression>(std::stod(expect(
 		tokens,
 		"NUMBER",
@@ -81,13 +81,14 @@ bool daedalus::core::parser::has_flag(
 
 std::shared_ptr<daedalus::core::ast::Expression> daedalus::core::parser::parse_expression(
 	daedalus::core::parser::Parser& parser,
-	std::vector<daedalus::core::lexer::Token>& tokens
+	std::vector<daedalus::core::lexer::Token>& tokens,
+	bool needsSemicolon
 ) {
 	std::shared_ptr<daedalus::core::ast::Expression> expression = nullptr;
 
 	for(auto& [key, node] : parser.nodesRegister) {
 		if(node.isTopNode) {
-			expression = node.parse_node(parser, tokens);
+			expression = node.parse_node(parser, tokens, needsSemicolon);
 			if(!has_flag(parser, daedalus::core::parser::ParserFlags::OPTI_CONST_EXPR)) {
 				return expression;
 			}
@@ -105,7 +106,7 @@ void daedalus::core::parser::parse(
 ) {
 	while(peek(tokens).type != "EOF") {
 		program->body.push_back(
-			parse_expression(parser, tokens)
+			parse_expression(parser, tokens, true)
 		);
 	}
 }

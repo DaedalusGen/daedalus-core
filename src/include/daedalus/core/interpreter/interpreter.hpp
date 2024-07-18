@@ -6,11 +6,11 @@
 #include <daedalus/core/interpreter/env.hpp>
 #include <daedalus/core/tools/assert.hpp>
 
-#include <string>
-#include <vector>
-#include <memory>
-#include <unordered_map>
 #include <functional>
+#include <memory>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 namespace daedalus {
     namespace core {
