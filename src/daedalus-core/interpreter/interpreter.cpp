@@ -1,5 +1,30 @@
 #include <daedalus/core/interpreter/interpreter.hpp>
 
+daedalus::core::interpreter::RuntimeValueWrapper daedalus::core::interpreter::wrap(
+    std::shared_ptr<daedalus::core::values::RuntimeValue> value,
+    Flags flags,
+    bool returnStatementBefore
+) {
+    return daedalus::core::interpreter::RuntimeValueWrapper{
+        value,
+        flags,
+        returnStatementBefore
+    };
+}
+
+bool daedalus::core::interpreter::flag_contains(
+    daedalus::core::interpreter::Flags source,
+    daedalus::core::interpreter::Flags searched
+) {
+    return (static_cast<size_t>(source) & static_cast<size_t>(searched)) != 0;
+}
+daedalus::core::interpreter::Flags daedalus::core::interpreter::flag_remove(
+    daedalus::core::interpreter::Flags source,
+    daedalus::core::interpreter::Flags to_remove
+) {
+    return static_cast<daedalus::core::interpreter::Flags>(static_cast<size_t>(source) & ~static_cast<size_t>(to_remove));
+}
+
 void daedalus::core::interpreter::setup_interpreter(
 	daedalus::core::interpreter::Interpreter& interpreter,
 	std::unordered_map<std::string, ParseStatementFunction> nodeEvaluationFunctions,
@@ -15,14 +40,16 @@ void daedalus::core::interpreter::setup_interpreter(
 		daedalus::core::interpreter::Interpreter& interpreter,
 		std::shared_ptr<daedalus::core::ast::Statement> statement,
 		std::shared_ptr<daedalus::core::env::Environment> env
-	) -> std::shared_ptr<daedalus::core::values::RuntimeValue> {
-		return std::make_shared<daedalus::core::values::NumberValue>(
-			std::dynamic_pointer_cast<daedalus::core::ast::NumberExpression>(statement)->value
+	) -> daedalus::core::interpreter::RuntimeValueWrapper {
+	    return daedalus::core::interpreter::wrap(
+			std::make_shared<daedalus::core::values::NumberValue>(
+    			std::dynamic_pointer_cast<daedalus::core::ast::NumberExpression>(statement)->value
+    		)
 		);
 	};
 }
 
-std::shared_ptr<daedalus::core::values::RuntimeValue> daedalus::core::interpreter::evaluate_statement(
+daedalus::core::interpreter::RuntimeValueWrapper daedalus::core::interpreter::evaluate_statement(
 	daedalus::core::interpreter::Interpreter& interpreter,
 	std::shared_ptr<daedalus::core::ast::Statement> statement,
 	std::shared_ptr<daedalus::core::env::Environment> env
@@ -39,12 +66,13 @@ std::shared_ptr<daedalus::core::values::RuntimeValue> daedalus::core::interprete
 	)
 }
 
-std::shared_ptr<daedalus::core::values::RuntimeValue> daedalus::core::interpreter::evaluate_scope(
+daedalus::core::interpreter::RuntimeValueWrapper daedalus::core::interpreter::evaluate_scope(
 	daedalus::core::interpreter::Interpreter& interpreter,
 	std::shared_ptr<daedalus::core::ast::Scope> scope,
 	std::vector<daedalus::core::interpreter::RuntimeResult>& results,
 	std::shared_ptr<daedalus::core::env::Environment> scope_env,
-	std::shared_ptr<daedalus::core::env::Environment> parent_env
+	std::shared_ptr<daedalus::core::env::Environment> parent_env,
+	Flags escape_flag
 ) {
 	if(scope_env == nullptr) {
 		scope_env = std::make_shared<daedalus::core::env::Environment>(
@@ -54,15 +82,21 @@ std::shared_ptr<daedalus::core::values::RuntimeValue> daedalus::core::interprete
 		);
 	}
 
-	std::shared_ptr<daedalus::core::values::RuntimeValue> result;
-	std::shared_ptr<daedalus::core::values::RuntimeValue> prev_result = std::make_shared<daedalus::core::values::NullValue>();
+	daedalus::core::interpreter::RuntimeValueWrapper result;
+	daedalus::core::interpreter::RuntimeValueWrapper previous_result = daedalus::core::interpreter::wrap(
+        std::make_shared<daedalus::core::values::NullValue>()
+	);
 
 	for(std::shared_ptr<daedalus::core::ast::Statement> statement : scope->body) {
 		result = daedalus::core::interpreter::evaluate_statement(interpreter, statement, scope_env);
-		prev_result = result;
+		if(daedalus::core::interpreter::flag_contains(result.flags, escape_flag)) {
+			previous_result.flags = result.flags;
+			return result.returnStatementBefore ? previous_result : result;
+		}
+		previous_result = result;
 		results.push_back(daedalus::core::interpreter::RuntimeResult{
 		    statement->repr(),
-			result->repr()
+			result.value->repr()
 		});
 	}
 	return result;

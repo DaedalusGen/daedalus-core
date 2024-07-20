@@ -6,6 +6,7 @@
 #include <daedalus/core/interpreter/env.hpp>
 #include <daedalus/core/tools/assert.hpp>
 
+#include <cstddef>
 #include <functional>
 #include <memory>
 #include <string>
@@ -16,9 +17,26 @@ namespace daedalus {
     namespace core {
     	namespace interpreter {
 
+            typedef size_t Flags;
+
+            typedef struct RuntimeValueWrapper {
+                std::shared_ptr<daedalus::core::values::RuntimeValue> value;
+                Flags flags;
+                bool returnStatementBefore;
+            } RuntimeValueWrapper;
+
+            RuntimeValueWrapper wrap(
+                std::shared_ptr<daedalus::core::values::RuntimeValue> value,
+                size_t flags = 0,
+                bool returnStatementBefore = false
+            );
+
+            bool flag_contains(Flags source, Flags searched);
+            Flags flag_remove(Flags source, Flags to_remove);
+
     		struct Interpreter;
 
-    		typedef std::function<std::shared_ptr<daedalus::core::values::RuntimeValue> (
+    		typedef std::function<daedalus::core::interpreter::RuntimeValueWrapper (
     			Interpreter&,
     			std::shared_ptr<daedalus::core::ast::Statement>,
     			std::shared_ptr<daedalus::core::env::Environment>
@@ -42,18 +60,19 @@ namespace daedalus {
                 std::string valueRepr;
             } RuntimeResult;
 
-    		std::shared_ptr<daedalus::core::values::RuntimeValue> evaluate_statement(
+    		RuntimeValueWrapper evaluate_statement(
     			Interpreter& interpreter,
     			std::shared_ptr<daedalus::core::ast::Statement> statement,
     			std::shared_ptr<daedalus::core::env::Environment> env
     		);
 
-    		std::shared_ptr<daedalus::core::values::RuntimeValue> evaluate_scope(
+    		RuntimeValueWrapper evaluate_scope(
     			Interpreter& interpreter,
     			std::shared_ptr<daedalus::core::ast::Scope> scope,
     			std::vector<RuntimeResult>& results,
     			std::shared_ptr<daedalus::core::env::Environment> scope_env = nullptr,
-    			std::shared_ptr<daedalus::core::env::Environment> parent_env = nullptr
+    			std::shared_ptr<daedalus::core::env::Environment> parent_env = nullptr,
+                Flags escape_flag = 0
     		);
 
     		void interpret(
