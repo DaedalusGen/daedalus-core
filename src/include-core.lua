@@ -11,6 +11,9 @@ project "Daedalus-Core"
 
 	includedirs { "include/" }
 
+	filter { "action:gmake" }
+        buildoptions { "-Wall", "-Werror", "-Wpedantic" }
+
 	filter { "platforms:run" }
 		kind "SharedLib"
 
