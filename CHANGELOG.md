@@ -1,11 +1,23 @@
 ```sh
-src/include-core.lua
+src/daedalus-core/parser/ast.cpp
 ```
 
-  - Updated to allow debug / release configurations
+  - Switched AST classes from `public` members to `protected` with getters (+ setters)
 
 ```sh
-src/include/daedalus/tools/assert.hpp
+src/daedalus-core/parser/parser.cpp
 ```
 
-  - Added `DAE_DEBUG`, `DAE_DEBUG_LOG`, `DAE_DEBUG_WARN` and `DAE_DEBUG_ERROR` macros
+  - Switched AST classes from `public` members to `protected` with getters (+ setters)
+
+```sh
+src/include/daedalus/core/parser/ast.hpp
+```
+
+  - Switched AST classes from `public` members to `protected` with getters (+ setters)
+
+```sh
+src/daedalus-core/interpreter/interpreter.cpp
+```
+
+  - Switched AST classes from `public` members to `protected` with getters (+ setters)

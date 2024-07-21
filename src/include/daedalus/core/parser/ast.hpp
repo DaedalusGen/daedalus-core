@@ -50,13 +50,17 @@ namespace daedalus {
     		 */
     		class Scope : public Expression {
     		public:
-    			std::vector<std::shared_ptr<Expression>> body;
-
     			Scope(std::vector<std::shared_ptr<Expression>> body = std::vector<std::shared_ptr<Expression>>());
+
+                std::vector<std::shared_ptr<Expression>> get_body();
+                void push_back_body(std::shared_ptr<Expression> expression);
 
     			virtual std::string type() override;
                 virtual std::shared_ptr<Expression> get_constexpr() override;
     			virtual std::string repr(int indent = 0) override;
+
+            protected:
+                std::vector<std::shared_ptr<Expression>> body;
     		};
 
     		/**
@@ -64,13 +68,18 @@ namespace daedalus {
     		 */
     		class NumberExpression : public Expression {
     		public:
-    			double value;
 
     			NumberExpression(double value);
+
+                double get_value();
+                void set_value(double value);
 
     			virtual std::string type() override;
     			virtual std::shared_ptr<Expression> get_constexpr() override;
     			virtual std::string repr(int indent = 0) override;
+
+            protected:
+    			double value;
     		};
     	}
     }

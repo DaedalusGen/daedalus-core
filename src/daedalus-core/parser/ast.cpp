@@ -16,6 +16,13 @@ daedalus::core::ast::Scope::Scope(std::vector<std::shared_ptr<daedalus::core::as
 	body(body)
 {}
 
+std::vector<std::shared_ptr<daedalus::core::ast::Expression>> daedalus::core::ast::Scope::get_body() {
+    return this->body;
+}
+void daedalus::core::ast::Scope::push_back_body(std::shared_ptr<Expression> expression) {
+    this->body.push_back(expression);
+}
+
 std::string daedalus::core::ast::Scope::type() {
 	return "Scope";
 }
@@ -42,6 +49,13 @@ std::string daedalus::core::ast::Scope::repr(int indent) {
 daedalus::core::ast::NumberExpression::NumberExpression(double value) :
 	value(value)
 {}
+
+double daedalus::core::ast::NumberExpression::get_value() {
+    return this->value;
+}
+void daedalus::core::ast::NumberExpression::set_value(double value) {
+    this->value = value;
+}
 
 std::string daedalus::core::ast::NumberExpression::type() {
 	return "NumberExpression";

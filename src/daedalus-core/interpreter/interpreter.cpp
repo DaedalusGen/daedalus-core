@@ -43,7 +43,7 @@ void daedalus::core::interpreter::setup_interpreter(
 	) -> daedalus::core::interpreter::RuntimeValueWrapper {
 	    return daedalus::core::interpreter::wrap(
 			std::make_shared<daedalus::core::values::NumberValue>(
-    			std::dynamic_pointer_cast<daedalus::core::ast::NumberExpression>(statement)->value
+    			std::dynamic_pointer_cast<daedalus::core::ast::NumberExpression>(statement)->get_value()
     		)
 		);
 	};
@@ -87,7 +87,7 @@ daedalus::core::interpreter::RuntimeValueWrapper daedalus::core::interpreter::ev
         std::make_shared<daedalus::core::values::NullValue>()
 	);
 
-	for(std::shared_ptr<daedalus::core::ast::Statement> statement : scope->body) {
+	for(std::shared_ptr<daedalus::core::ast::Statement> statement : scope->get_body()) {
 		result = daedalus::core::interpreter::evaluate_statement(interpreter, statement, scope_env);
 		if(daedalus::core::interpreter::flag_contains(result.flags, escape_flag)) {
 			previous_result.flags = result.flags;

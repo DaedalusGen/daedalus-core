@@ -105,7 +105,7 @@ void daedalus::core::parser::parse(
 	std::vector<daedalus::core::lexer::Token>& tokens
 ) {
 	while(peek(tokens).type != "EOF") {
-		program->body.push_back(
+		program->push_back_body(
 			parse_expression(parser, tokens, true)
 		);
 	}
