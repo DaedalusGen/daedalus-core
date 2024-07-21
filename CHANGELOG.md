@@ -1,23 +1,11 @@
 ```sh
-src/daedalus-entropia/interpreter/interpreter.hpp
+src/include-core.lua
 ```
 
-  - Added `Flags` typedef
-  - Added `RuntimeValueWrapper` composed of
-    - A `RuntimeValue` field
-    - A `Flags` field representing scope escaping behaviors
-    - `returnStatementBefore` (eg. break -> true, return -> false)
-  - Added `wrap` method
-  - Added `flag_contains` and `flag_remove` methods
-  - Replaced `RuntimeValue` with `RuntimeValue`
-  - Added `escape_flag` param to `evaluate_scope` method
+  - Updated to allow debug / release configurations
 
 ```sh
-src/daedalus-entropia/interpreter/interpreter.cpp
+src/include/daedalus/tools/assert.hpp
 ```
 
-  - Implemented `wrap` method
-  - Implemented `flag_contains` and `flag_remove` methods
-  - Replaced `RuntimeValue` with `RuntimeValue`
-  - Applied `wrap` on every function return
-  - Added flags and before statement return logic to `evaluate_scope` method
+  - Added `DAE_DEBUG`, `DAE_DEBUG_LOG`, `DAE_DEBUG_WARN` and `DAE_DEBUG_ERROR` macros

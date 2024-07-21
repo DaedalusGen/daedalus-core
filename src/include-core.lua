@@ -11,11 +11,14 @@ project "Daedalus-Core"
 
 	includedirs { "include/" }
 
-	filter { "configurations:run" }
+	filter { "platforms:run" }
 		kind "SharedLib"
 
-	filter { "configurations:static-build" }
+	filter { "platforms:static-build" }
 		kind "StaticLib"
 
-	filter { "configurations:dynamic-build" }
+	filter { "platforms:dynamic-build" }
 		kind "SharedLib"
+
+	filter { "configurations:debug" }
+	    defines { "DEBUG" }
