@@ -90,8 +90,12 @@ void daedalus::core::lexer::lex(
 
 		// * Check for skippable characters
 
-		while(std::find(lexer.whitespaces.begin(), lexer.whitespaces.end(), peek(src)) != lexer.whitespaces.end()) {
-			(void)shift(src);
+		try {
+            while(std::find(lexer.whitespaces.begin(), lexer.whitespaces.end(), peek(src)) != lexer.whitespaces.end()) {
+    			(void)shift(src);
+    		}
+		} catch(const std::exception& e) {
+		    break;
 		}
 
 		// * Check for comments
