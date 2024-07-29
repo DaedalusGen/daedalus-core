@@ -27,7 +27,7 @@ std::shared_ptr<daedalus::core::values::RuntimeValue> daedalus::core::env::Envir
 		return this->parent->set_value(key, value);
 	}
 
-	daedalus::core::env::EnvValue envValue = daedalus::core::env::EnvValue{
+	auto envValue = daedalus::core::env::EnvValue{
 		value,
 		this->values.at(key).properties
 	};
@@ -65,7 +65,7 @@ std::shared_ptr<daedalus::core::values::RuntimeValue> daedalus::core::env::Envir
 		std::runtime_error("Trying to redeclare an existing variable " + key)
 	)
 
-	daedalus::core::env::EnvValue envValue = daedalus::core::env::EnvValue{
+	auto envValue = daedalus::core::env::EnvValue{
 		value,
 		properties
 	};
@@ -92,7 +92,6 @@ std::shared_ptr<daedalus::core::values::RuntimeValue> daedalus::core::env::Envir
 			std::runtime_error("Trying to get non-declared variable " + key)
 		)
 		return this->parent->get_value(key);
-
 	}
 
 	daedalus::core::env::EnvValue envValue = this->values.at(key);

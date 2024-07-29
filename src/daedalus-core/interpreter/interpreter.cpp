@@ -107,7 +107,7 @@ void daedalus::core::interpreter::interpret(
 	std::vector<daedalus::core::interpreter::RuntimeResult>& results,
 	std::shared_ptr<daedalus::core::ast::Scope> program
 ) {
-	std::shared_ptr<daedalus::core::env::Environment> env = std::make_shared<daedalus::core::env::Environment>(
+	auto env = std::make_shared<daedalus::core::env::Environment>(
 		interpreter.envValuesProperties,
 		interpreter.validationRules
 	);

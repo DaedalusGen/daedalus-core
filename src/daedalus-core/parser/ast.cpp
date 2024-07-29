@@ -27,8 +27,8 @@ std::string daedalus::core::ast::Scope::type() {
 	return "Scope";
 }
 std::shared_ptr<daedalus::core::ast::Expression> daedalus::core::ast::Scope::get_constexpr() {
-    std::vector<std::shared_ptr<daedalus::core::ast::Expression>> body = std::vector<std::shared_ptr<daedalus::core::ast::Expression>>();
-    for (const std::shared_ptr<daedalus::core::ast::Expression> expression : this->body) {
+    auto body = std::vector<std::shared_ptr<daedalus::core::ast::Expression>>();
+    for(const std::shared_ptr<daedalus::core::ast::Expression> expression : this->body) {
         body.push_back(expression->get_constexpr());
     }
     this->body = body;
